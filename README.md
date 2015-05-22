@@ -8,7 +8,7 @@ Having looked around, nothing I can find fits my requirements exactly.  My old l
 
 ## Syntax
 
-
+#### Options class
 ```
 private class Options
 {
@@ -18,5 +18,9 @@ private class Options
     public bool Mandatory { get; set; }
 }
 ```
+## Roadmap
 
-
+* Implement types other than boolean
+* Get Usage information
+* Auto add help
+* Multiple commands (like git commit, git push, etc)

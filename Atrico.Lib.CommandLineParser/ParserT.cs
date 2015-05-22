@@ -37,6 +37,11 @@ namespace Atrico.Lib.CommandLineParser
                 _args = args.Select(PromotePartialNames);
            }
 
+            public static IEnumerable<IOptionInfo> GetOptionInformation()
+            {
+                return typeof (T).GetProperties().Where(p => p.CanWrite).Select(OptionInfo.Create).Where(oi => oi != null);              
+            }
+            
             private string PromotePartialNames(string name)
             {
                 // Not an option

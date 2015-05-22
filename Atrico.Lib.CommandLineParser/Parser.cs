@@ -21,5 +21,16 @@ namespace Atrico.Lib.CommandLineParser
             var parser = new ParserT<T>(args);
             return parser.Result;
         }
+
+        /// <summary>
+        ///     Parses the command line with the options specified
+        /// </summary>
+        /// <typeparam name="T">Type of options class</typeparam>
+        /// <returns>Populated options or null if error</returns>
+        public static IEnumerable<string> GetUsage<T>() where T : class, new()
+        {
+            var parser = new ParserT<T>(args);
+            return parser.Result;
+        }
     }
 }

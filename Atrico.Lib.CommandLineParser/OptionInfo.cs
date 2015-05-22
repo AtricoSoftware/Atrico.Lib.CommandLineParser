@@ -8,13 +8,18 @@ namespace Atrico.Lib.CommandLineParser
 {
     public static partial class Parser
     {
+        public interface IOptionInfo
+        {
+            
+        }
+
         /// <summary>
         ///     Command line parser for specific type
         /// </summary>
         private partial class ParserT<T> where T : class, new()
         {
             [DebuggerDisplay("Option: {_name}: {_fulfilled}")]
-            private class OptionInfo
+            private class OptionInfo : IOptionInfo
             {
                 private readonly PropertyInfo _property;
                 private readonly OptionAttribute _attribute;
