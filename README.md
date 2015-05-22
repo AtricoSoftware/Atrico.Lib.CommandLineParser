@@ -6,6 +6,7 @@ Currently still in development
 Having looked around, nothing I can find fits my requirements exactly.  An old library I wrote years ago did exactly what I wanted so this is a refactored version using attributes to specify options
 
 ## Features
+Windows powershell like command line, Options can be given by position and/or name.  Options can be specified by the minimum unique name.
 
 ## Syntax
 
