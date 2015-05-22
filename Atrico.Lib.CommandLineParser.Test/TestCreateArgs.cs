@@ -17,15 +17,17 @@ namespace Atrico.Lib.CommandLineParser.Test
             // Assert
             Assert.That(Value.Of(args).Is().EqualTo(expected), "Correct args");
         }
+
         [Test]
         public void TestEmpty()
         {
             TestImplementation("", new string[] {});
         }
+
         [Test]
         public void TestsSimpleElements()
         {
-            TestImplementation("-a -b cdef --g /h", new [] {"-a", "-b", "cdef", "--g", "/h"});
+            TestImplementation("-a -b cdef --g /h", new[] {"-a", "-b", "cdef", "--g", "/h"});
         }
     }
 }

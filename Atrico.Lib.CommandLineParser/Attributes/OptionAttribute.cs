@@ -8,5 +8,12 @@ namespace Atrico.Lib.CommandLineParser.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class OptionAttribute : Attribute
     {
+        /// <summary>
+        /// Determines if option is mandatory
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if required; otherwise, <c>false</c>.
+        /// </value>
+        public bool Required { get; set; }
     }
 }

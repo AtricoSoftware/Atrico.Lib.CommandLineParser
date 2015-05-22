@@ -9,7 +9,7 @@ namespace Atrico.Lib.CommandLineParser.Test
     {
         protected static string[] CreateArgs(string commandLine)
         {
-            return commandLine.Split(new []{" "}, StringSplitOptions.RemoveEmptyEntries);
+            return commandLine.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

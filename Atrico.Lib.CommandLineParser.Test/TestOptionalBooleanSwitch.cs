@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Atrico.Lib.Assertions;
+﻿using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
@@ -8,7 +7,7 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestBooleanSwitch : CommandLineParserTestFixture
+    public class TestOptionalBooleanSwitch : CommandLineParserTestFixture
     {
         private class Options
         {
@@ -17,21 +16,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         }
 
         [Test]
-        public void TestOptionalMissing()
-        {
-            // Arrange
-            var args = CreateArgs("");
-
-            // Act
-            var options = Parser.Parse<Options>(args);
-
-            // Assert
-            Assert.That(Value.Of(options).Is().Not().Null(), "Result not null");
-            Assert.That(Value.Of(options.Boolean).Is().False(), "Switch is false");
-        }
-
-        [Test]
-        public void TestOptionalPresent()
+        public void TestPresent()
         {
             // Arrange
             var args = CreateArgs("-boolean");
@@ -40,8 +25,22 @@ namespace Atrico.Lib.CommandLineParser.Test
             var options = Parser.Parse<Options>(args);
 
             // Assert
-            Assert.That(Value.Of(options).Is().Not().Null(), "Result not null");
+            Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
             Assert.That(Value.Of(options.Boolean).Is().True(), "Switch is true");
+        }
+
+        [Test]
+        public void TestMissing()
+        {
+            // Arrange
+            var args = CreateArgs("");
+
+            // Act
+            var options = Parser.Parse<Options>(args);
+
+            // Assert
+            Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
+            Assert.That(Value.Of(options.Boolean).Is().False(), "Switch is false");
         }
     }
 }
