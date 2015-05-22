@@ -1,6 +1,6 @@
 # Atrico.Lib.CommandLineParser
-Command line parser project
-*Currently still in development*
+Command line parser project<br/>
+Currently still in development
 
 ## Why?
 Having looked around, nothing I can find fits my requirements exactly.  An old library I wrote years ago did exactly what I wanted so this is a refactored version using attributes to specify options
