@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Atrico.Lib.CommandLineParser.Attributes;
 
 namespace Atrico.Lib.CommandLineParser
 {
@@ -23,14 +20,14 @@ namespace Atrico.Lib.CommandLineParser
         }
 
         /// <summary>
-        ///     Parses the command line with the options specified
+        ///     Gets the usage information for this type
         /// </summary>
         /// <typeparam name="T">Type of options class</typeparam>
-        /// <returns>Populated options or null if error</returns>
+        /// <returns>Usage info as multiple lines of text</returns>
         public static IEnumerable<string> GetUsage<T>() where T : class, new()
         {
-            var parser = new ParserT<T>(args);
-            return parser.Result;
+            // TODO
+            return new String[] {};
         }
     }
 }

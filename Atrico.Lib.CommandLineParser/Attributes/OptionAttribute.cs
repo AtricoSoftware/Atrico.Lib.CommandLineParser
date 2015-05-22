@@ -9,10 +9,10 @@ namespace Atrico.Lib.CommandLineParser.Attributes
     public class OptionAttribute : Attribute
     {
         /// <summary>
-        /// Determines if option is mandatory
+        ///     Determines if option is mandatory
         /// </summary>
         /// <value>
-        ///   <c>true</c> if required; otherwise, <c>false</c>.
+        ///     <c>true</c> if required; otherwise, <c>false</c>.
         /// </value>
         public bool Required { get; set; }
     }

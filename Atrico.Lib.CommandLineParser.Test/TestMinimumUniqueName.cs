@@ -16,8 +16,10 @@ namespace Atrico.Lib.CommandLineParser.Test
         {
             [Option]
             public bool Ab { get; set; }
+
             [Option]
             public bool Abcd { get; set; }
+
             [Option]
             public bool Abdc { get; set; }
         }
@@ -32,7 +34,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof(AmbiguousOptionException)), "Exception thrown");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (AmbiguousOptionException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
 
@@ -67,6 +69,5 @@ namespace Atrico.Lib.CommandLineParser.Test
             Assert.That(Value.Of(options.Abcd).Is().True(), "abcd is true");
             Assert.That(Value.Of(options.Abdc).Is().False(), "abdc is false");
         }
-
     }
 }

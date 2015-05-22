@@ -10,7 +10,6 @@ namespace Atrico.Lib.CommandLineParser
     {
         public interface IOptionInfo
         {
-            
         }
 
         /// <summary>

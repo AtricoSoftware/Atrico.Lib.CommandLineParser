@@ -1,26 +1,24 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.CommandLineParser.Exceptions;
 using Atrico.Lib.Testing;
-using NUnit.Framework;
-using Assert = Atrico.Lib.Assertions.Assert;
+using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-    [Testing.NUnitAttributes.TestFixture]
+    [TestFixture]
     public class TestMandatoryBooleanSwitch : CommandLineParserTestFixture
     {
         private class Options
         {
-            [Option(Required=true)]
+            [Option(Required = true)]
             public bool Boolean { get; set; }
         }
 
-        [Testing.NUnitAttributes.Test]
+        [Test]
         public void TestPresent()
         {
             // Arrange
@@ -34,17 +32,17 @@ namespace Atrico.Lib.CommandLineParser.Test
             Assert.That(Value.Of(options.Boolean).Is().True(), "Switch is true");
         }
 
-        [Testing.NUnitAttributes.Test]
+        [Test]
         public void TestMissing()
         {
             // Arrange
             var args = CreateArgs("");
 
             // Act
-            var ex = Catch.Exception(()=>Parser.Parse<Options>(args));
+            var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof(MissingOptionException)), "Exception thrown");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
     }

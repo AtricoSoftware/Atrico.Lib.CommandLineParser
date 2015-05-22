@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Atrico.Lib.CommandLineParser.Exceptions;
 using Atrico.Lib.Common.Collections;
 
@@ -30,18 +29,18 @@ namespace Atrico.Lib.CommandLineParser
             {
                 _result = new Lazy<T>(FitArguments);
                 // Find (writeable) properties with attribute
-                _options = typeof (T).GetProperties().Where(p => p.CanWrite).Select(OptionInfo.Create).Where(oi => oi != null).ToArray();
+                _options = GetOptionInformation().Cast<OptionInfo>().ToArray();
                 // Store all option names
                 _optionNames = _options.Select(opt => opt.Name);
                 // Check for ambiguity and promote partial names
                 _args = args.Select(PromotePartialNames);
-           }
+            }
 
             public static IEnumerable<IOptionInfo> GetOptionInformation()
             {
-                return typeof (T).GetProperties().Where(p => p.CanWrite).Select(OptionInfo.Create).Where(oi => oi != null);              
+                return typeof (T).GetProperties().Where(p => p.CanWrite).Select(OptionInfo.Create).Where(oi => oi != null);
             }
-            
+
             private string PromotePartialNames(string name)
             {
                 // Not an option
@@ -75,10 +74,11 @@ namespace Atrico.Lib.CommandLineParser
                 arg = arg.Substring(_switch.Length).ToLower();
                 return true;
             }
-           private static string MakeSwitch(string arg)
-           {
-               return IsSwitch(arg) ? arg : string.Format("{0}{1}", _switch, arg);
-           }
+
+            private static string MakeSwitch(string arg)
+            {
+                return IsSwitch(arg) ? arg : string.Format("{0}{1}", _switch, arg);
+            }
         }
     }
 }
