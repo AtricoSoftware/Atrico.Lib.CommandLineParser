@@ -1,16 +1,16 @@
 # Atrico.Lib.CommandLineParser
 Command line parser project
-Currently in development
+*Currently still in development*
 
 ## Why?
-Having looked around, nothing I can find fits my requirements exactly.  My old library did exactly what I wanted so this is a refactored version using attributes to specify options
+Having looked around, nothing I can find fits my requirements exactly.  An old library I wrote years ago did exactly what I wanted so this is a refactored version using attributes to specify options
 
 ## Features
 
 ## Syntax
 
 #### Options class
-```
+```c#
 private class Options
 {
     [Option]
