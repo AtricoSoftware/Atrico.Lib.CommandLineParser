@@ -8,13 +8,28 @@ namespace Atrico.Lib.CommandLineParser
 {
     public static partial class Parser
     {
+        private const string _switch = "-";
+
+        private static bool IsSwitch(string arg)
+        {
+            return arg.StartsWith(_switch);
+        }
+
+        private static bool IsSwitch(ref string arg)
+        {
+            if (!IsSwitch(arg))
+            {
+                return false;
+            }
+            arg = arg.Substring(_switch.Length).ToLower();
+            return true;
+        }
+
         /// <summary>
         ///     Command line parser for specific type
         /// </summary>
-        private partial class ParserT<T> where T : class, new()
+        private class ParserT<T> where T : class, new()
         {
-            private const string _switch = "-";
-
             private readonly OptionInfo[] _options;
             private readonly IEnumerable<string> _args;
             private readonly Lazy<T> _result;
@@ -29,14 +44,14 @@ namespace Atrico.Lib.CommandLineParser
             {
                 _result = new Lazy<T>(FitArguments);
                 // Find (writeable) properties with attribute
-                _options = GetOptionInformation().Cast<OptionInfo>().ToArray();
+                _options = GetOptionInformation().ToArray();
                 // Store all option names
                 _optionNames = _options.Select(opt => opt.Name);
                 // Check for ambiguity and promote partial names
                 _args = args.Select(PromotePartialNames);
             }
 
-            public static IEnumerable<IOptionInfo> GetOptionInformation()
+            public static IEnumerable<OptionInfo> GetOptionInformation()
             {
                 return typeof (T).GetProperties().Where(p => p.CanWrite).Select(OptionInfo.Create).Where(oi => oi != null);
             }
@@ -44,13 +59,22 @@ namespace Atrico.Lib.CommandLineParser
             private string PromotePartialNames(string name)
             {
                 // Not an option
-                if (!IsSwitch(ref name)) return name;
+                if (!IsSwitch(ref name))
+                {
+                    return name;
+                }
                 // Full match
-                if (_optionNames.Contains(name)) return MakeSwitch(name);
+                if (_optionNames.Contains(name))
+                {
+                    return MakeSwitch(name);
+                }
                 // Partial match
                 var possible = _optionNames.Where(nm => nm.StartsWith(name)).ToArray();
                 // One found
-                if (possible.Length == 1) return MakeSwitch(possible.First());
+                if (possible.Length == 1)
+                {
+                    return MakeSwitch(possible.First());
+                }
                 // None/Multiple found
                 throw possible.Any() ? new AmbiguousOptionException(MakeSwitch(name), possible.Select(MakeSwitch)) : new UnexpectedOptionException(MakeSwitch(name)) as CommandLineParserException;
             }
@@ -61,18 +85,6 @@ namespace Atrico.Lib.CommandLineParser
                 var results = new T();
                 _options.ForEach(option => option.Populate(results));
                 return results;
-            }
-
-            private static bool IsSwitch(string arg)
-            {
-                return arg.StartsWith(_switch);
-            }
-
-            private static bool IsSwitch(ref string arg)
-            {
-                if (!IsSwitch(arg)) return false;
-                arg = arg.Substring(_switch.Length).ToLower();
-                return true;
             }
 
             private static string MakeSwitch(string arg)
