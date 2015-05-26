@@ -19,11 +19,44 @@ namespace Atrico.Lib.CommandLineParser
 
             protected override object GetOptionValue(Queue<string> args)
             {
-                if (!args.Any()) return null;
+                if (!args.Any())
+                {
+                    return null;
+                }
                 var valueStr = args.Dequeue();
-                int value;
-                if (!int.TryParse(valueStr, out value)) throw new OptionParameterWrongTypeException(Name, typeof(int), valueStr);
-                return value;
+                try
+                {
+                    return (T) Convert.ChangeType(valueStr, typeof (T));
+                }
+                catch (Exception ex)
+                {
+                    throw new OptionParameterWrongTypeException(Name, typeof (T), valueStr, ex);
+                }
+            }
+        }
+
+        internal class OptionInfoNullable<T> : OptionInfo where T : struct
+        {
+            public OptionInfoNullable(PropertyInfo property, OptionAttribute attribute)
+                : base(property, attribute)
+            {
+            }
+
+            protected override object GetOptionValue(Queue<string> args)
+            {
+                if (!args.Any())
+                {
+                    return null;
+                }
+                var valueStr = args.Dequeue();
+                try
+                {
+                    return (T) Convert.ChangeType(valueStr, typeof (T));
+                }
+                catch (Exception ex)
+                {
+                    throw new OptionParameterWrongTypeException(Name, typeof (T), valueStr, ex);
+                }
             }
         }
 
@@ -57,6 +90,40 @@ namespace Atrico.Lib.CommandLineParser
         [DebuggerDisplay("Option: {_name}: {_fulfilled}")]
         internal abstract class OptionInfo
         {
+            private delegate OptionInfo OptionCreator(PropertyInfo property, OptionAttribute attribute);
+
+            private static readonly IDictionary<Type, OptionCreator> _supportedTypes = new Dictionary<Type, OptionCreator>
+            {
+                // Boolean option
+                {typeof (bool), (p, a) => new OptionInfoBoolean(p, a)},
+                // String
+                {typeof (string), (p, a) => new OptionInfoString(p, a)},
+                // POD types
+                {typeof (char), (p, a) => new OptionInfoPod<char>(p, a)},
+                {typeof (byte), (p, a) => new OptionInfoPod<byte>(p, a)},
+                {typeof (sbyte), (p, a) => new OptionInfoPod<sbyte>(p, a)},
+                {typeof (short), (p, a) => new OptionInfoPod<short>(p, a)},
+                {typeof (ushort), (p, a) => new OptionInfoPod<ushort>(p, a)},
+                {typeof (int), (p, a) => new OptionInfoPod<int>(p, a)},
+                {typeof (uint), (p, a) => new OptionInfoPod<uint>(p, a)},
+                {typeof (long), (p, a) => new OptionInfoPod<long>(p, a)},
+                {typeof (ulong), (p, a) => new OptionInfoPod<ulong>(p, a)},
+                {typeof (float), (p, a) => new OptionInfoPod<float>(p, a)},
+                {typeof (double), (p, a) => new OptionInfoPod<double>(p, a)},
+                // Nullable POD types
+                {typeof (char?), (p, a) => new OptionInfoNullable<char>(p, a)},
+                {typeof (byte?), (p, a) => new OptionInfoNullable<byte>(p, a)},
+                {typeof (sbyte?), (p, a) => new OptionInfoNullable<sbyte>(p, a)},
+                {typeof (short?), (p, a) => new OptionInfoNullable<short>(p, a)},
+                {typeof (ushort?), (p, a) => new OptionInfoNullable<ushort>(p, a)},
+                {typeof (int?), (p, a) => new OptionInfoNullable<int>(p, a)},
+                {typeof (uint?), (p, a) => new OptionInfoNullable<uint>(p, a)},
+                {typeof (long?), (p, a) => new OptionInfoNullable<long>(p, a)},
+                {typeof (ulong?), (p, a) => new OptionInfoNullable<ulong>(p, a)},
+                {typeof (float?), (p, a) => new OptionInfoNullable<float>(p, a)},
+                {typeof (double?), (p, a) => new OptionInfoNullable<double>(p, a)},
+            };
+
             private readonly PropertyInfo _property;
             private readonly OptionAttribute _attribute;
             private readonly string _name;
@@ -71,13 +138,16 @@ namespace Atrico.Lib.CommandLineParser
             public static OptionInfo Create(PropertyInfo property)
             {
                 var attribute = property.GetCustomAttribute<OptionAttribute>();
-                if (attribute == null) return null;
-                // Boolean option
-                if (property.PropertyType == typeof (bool)) return new OptionInfoBoolean(property, attribute);
-                // String
-                if (property.PropertyType == typeof (string)) return new OptionInfoString(property, attribute);
-                // Int
-                if (property.PropertyType == typeof (int)) return new OptionInfoPod<int>(property, attribute);
+                if (attribute == null)
+                {
+                    return null;
+                }
+                OptionCreator creator;
+                // Supported types
+                if (_supportedTypes.TryGetValue(property.PropertyType, out creator))
+                {
+                    return creator(property, attribute);
+                }
                 // Unsupported
                 throw new UnSupportedOptionTypeException(MakeSwitch(property.Name), property.PropertyType);
             }
@@ -91,11 +161,17 @@ namespace Atrico.Lib.CommandLineParser
 
             public IEnumerable<string> FulFill(IEnumerable<string> argsIn)
             {
-                if (_fulfilled) return argsIn;
+                if (_fulfilled)
+                {
+                    return argsIn;
+                }
                 var argsArray = argsIn.ToArray();
                 var argsOut = argsArray.TakeWhile(item => !_name.Equals(RemoveSwitch(item)));
                 var argsRemaining = argsArray.SkipWhile(item => !_name.Equals(RemoveSwitch(item))).ToArray();
-                if (!argsRemaining.Any()) return argsOut;
+                if (!argsRemaining.Any())
+                {
+                    return argsOut;
+                }
                 _fulfilled = true;
                 // Remove matched option
                 var argsQueue = new Queue<string>(argsRemaining.Skip(1));

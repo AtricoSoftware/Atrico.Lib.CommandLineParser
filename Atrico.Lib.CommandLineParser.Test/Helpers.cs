@@ -13,12 +13,12 @@ namespace Atrico.Lib.CommandLineParser.Test
             InsideString
         }
 
-        public static string[] CreateArgs(string commandLine)
+        public static string[] CreateArgs(string commandLine, params object[] args)
         {
             var tokens = new List<string>();
             var currentToken = new StringBuilder();
             var state = State.OutsideToken;
-            foreach (var ch in commandLine)
+            foreach (var ch in string.Format(commandLine, args))
             {
                 switch (state)
                 {
@@ -74,7 +74,10 @@ namespace Atrico.Lib.CommandLineParser.Test
                         break;
                 }
             }
-            if (currentToken.Length > 0) tokens.Add(currentToken.ToString());
+            if (currentToken.Length > 0)
+            {
+                tokens.Add(currentToken.ToString());
+            }
 
             return tokens.ToArray();
         }

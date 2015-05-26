@@ -7,8 +7,8 @@ namespace Atrico.Lib.CommandLineParser.Exceptions
     /// </summary>
     public class CommandLineParserException : Exception
     {
-        protected CommandLineParserException(string message)
-            : base(message)
+        protected CommandLineParserException(string message, Exception inner = null)
+            : base(message, inner)
         {
         }
     }
