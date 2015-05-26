@@ -48,6 +48,7 @@
     <Compile Include="Exceptions\CommandLineParserException.cs" />
     <Compile Include="Exceptions\MissingOptionException.cs" />
     <Compile Include="Exceptions\MissingOptionParameterException.cs" />
+    <Compile Include="Exceptions\OptionParameterWrongTypeException.cs" />
     <Compile Include="Exceptions\UnSupportedOptionTypeException.cs" />
     <Compile Include="Exceptions\UnexpectedOptionException.cs" />
     <Compile Include="OptionInfo.cs" />

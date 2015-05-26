@@ -60,5 +60,19 @@ namespace Atrico.Lib.CommandLineParser.Test
             Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionParameterException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
+
+        [Test]
+        public void TestParameterWrongType()
+        {
+            // Arrange
+            var args = CreateArgs("-number text");
+
+            // Act
+            var ex = Catch.Exception(() => Parser.Parse<Options>(args));
+
+            // Assert
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (OptionParameterWrongTypeException)), "Exception thrown");
+            Debug.WriteLine(ex.Message);
+        }
     }
 }

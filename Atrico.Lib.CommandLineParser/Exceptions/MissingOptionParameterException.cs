@@ -3,7 +3,7 @@
 namespace Atrico.Lib.CommandLineParser.Exceptions
 {
     /// <summary>
-    ///     A Required  Option parameter was missing
+    ///     A Required Option parameter was missing
     /// </summary>
     public class MissingOptionParameterException : CommandLineParserException
     {

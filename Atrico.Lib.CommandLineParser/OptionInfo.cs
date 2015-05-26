@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,23 @@ namespace Atrico.Lib.CommandLineParser
 {
     public static partial class Parser
     {
+        internal class OptionInfoPod<T> : OptionInfo where T : struct
+        {
+            public OptionInfoPod(PropertyInfo property, OptionAttribute attribute)
+                : base(property, attribute)
+            {
+            }
+
+            protected override object GetOptionValue(Queue<string> args)
+            {
+                if (!args.Any()) return null;
+                var valueStr = args.Dequeue();
+                int value;
+                if (!int.TryParse(valueStr, out value)) throw new OptionParameterWrongTypeException(Name, typeof(int), valueStr);
+                return value;
+            }
+        }
+
         internal class OptionInfoString : OptionInfo
         {
             public OptionInfoString(PropertyInfo property, OptionAttribute attribute)
@@ -58,6 +76,8 @@ namespace Atrico.Lib.CommandLineParser
                 if (property.PropertyType == typeof (bool)) return new OptionInfoBoolean(property, attribute);
                 // String
                 if (property.PropertyType == typeof (string)) return new OptionInfoString(property, attribute);
+                // Int
+                if (property.PropertyType == typeof (int)) return new OptionInfoPod<int>(property, attribute);
                 // Unsupported
                 throw new UnSupportedOptionTypeException(MakeSwitch(property.Name), property.PropertyType);
             }
