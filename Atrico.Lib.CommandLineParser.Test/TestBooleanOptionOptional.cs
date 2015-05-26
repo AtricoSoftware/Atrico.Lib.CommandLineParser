@@ -2,12 +2,13 @@
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
+using Atrico.Lib.Testing;
 using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestBooleanOptionOptional : CommandLineParserTestFixture
+    public class TestBooleanOptionOptional : TestFixtureBase
     {
         private class Options
         {
@@ -19,7 +20,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestPresent()
         {
             // Arrange
-            var args = CreateArgs("-boolean");
+            var args = Helpers.CreateArgs("-boolean");
 
             // Act
             var options = Parser.Parse<Options>(args);
@@ -33,7 +34,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissing()
         {
             // Arrange
-            var args = CreateArgs("");
+            var args = Helpers.CreateArgs("");
 
             // Act
             var options = Parser.Parse<Options>(args);

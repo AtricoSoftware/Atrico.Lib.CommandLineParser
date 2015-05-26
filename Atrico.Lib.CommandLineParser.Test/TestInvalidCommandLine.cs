@@ -10,7 +10,7 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestInvalidCommandLine : CommandLineParserTestFixture
+    public class TestInvalidCommandLine : TestFixtureBase
     {
         private class Options
         {
@@ -22,7 +22,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestUnexpectedOption()
         {
             // Arrange
-            var args = CreateArgs("-ac");
+            var args = Helpers.CreateArgs("-ac");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));

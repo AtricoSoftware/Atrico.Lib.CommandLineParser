@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Atrico.Lib.Testing;
-using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-    [TestFixture]
-    public abstract class CommandLineParserTestFixture : TestFixtureBase
+    public static class Helpers
     {
         private enum State
         {
@@ -16,7 +13,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             InsideString
         }
 
-        protected static string[] CreateArgs(string commandLine)
+        public static string[] CreateArgs(string commandLine)
         {
             var tokens = new List<string>();
             var currentToken = new StringBuilder();

@@ -9,35 +9,40 @@ using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-    [TestFixture]
-    public class TestNumberOptionMandatory : CommandLineParserTestFixture
+    public class TestNumberOptionMandatory<T> : TestPODTypes<T> where T : struct
     {
+        private readonly T _value;
+
         private class Options
         {
             [Option(Required = true)]
-            public int Number { get; set; }
+            public T Number { get; set; }
+        }
+
+        public TestNumberOptionMandatory(T value)
+        {
+            _value = value;
         }
 
         [Test]
         public void TestPresent()
         {
-            const int theNumber = 123;
             // Arrange
-            var args = CreateArgs(string.Format("-number '{0}'", theNumber));
+            var args = Helpers.CreateArgs(string.Format("-number '{0}'", _value));
 
             // Act
             var options = Parser.Parse<Options>(args);
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Number).Is().EqualTo(theNumber), "Value is correct");
+            Assert.That(Value.Of(options.Number).Is().EqualTo(_value), "Value is correct");
         }
 
         [Test]
         public void TestMissing()
         {
             // Arrange
-            var args = CreateArgs("");
+            var args = Helpers.CreateArgs("");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -51,7 +56,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissingParameter()
         {
             // Arrange
-            var args = CreateArgs("-number");
+            var args = Helpers.CreateArgs("-number");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -65,7 +70,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestParameterWrongType()
         {
             // Arrange
-            var args = CreateArgs("-number text");
+            var args = Helpers.CreateArgs("-number text");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
