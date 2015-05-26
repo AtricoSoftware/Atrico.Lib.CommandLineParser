@@ -19,6 +19,10 @@ namespace Atrico.Lib.CommandLineParser
         {
             return !IsSwitch(arg) ? null : arg.Substring(_switch.Length).ToLower();
         }
+        private static string MakeSwitch(string arg)
+        {
+            return IsSwitch(arg) ? arg : string.Format("{0}{1}", _switch, arg);
+        }
 
         /// <summary>
         ///     Command line parser for specific type
@@ -48,7 +52,7 @@ namespace Atrico.Lib.CommandLineParser
 
             public static IEnumerable<OptionInfo> GetOptionInformation()
             {
-                return typeof (T).GetProperties().Where(p => p.CanWrite).Select(OptionInfo.Create).Where(oi => oi != null);
+                return typeof (T).GetProperties().Where(p => p.CanWrite).Select(OptionInfo.Create);
             }
 
             private string PromotePartialNames(string arg)
@@ -83,10 +87,6 @@ namespace Atrico.Lib.CommandLineParser
                 return results;
             }
 
-            private static string MakeSwitch(string arg)
-            {
-                return IsSwitch(arg) ? arg : string.Format("{0}{1}", _switch, arg);
-            }
-        }
+         }
     }
 }

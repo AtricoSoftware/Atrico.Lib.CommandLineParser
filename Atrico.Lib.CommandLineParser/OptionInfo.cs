@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -15,7 +14,6 @@ namespace Atrico.Lib.CommandLineParser
             public OptionInfoString(PropertyInfo property, OptionAttribute attribute)
                 : base(property, attribute)
             {
-                
             }
 
             protected override object GetOptionValue(Queue<string> args)
@@ -23,12 +21,12 @@ namespace Atrico.Lib.CommandLineParser
                 return !args.Any() ? null : args.Dequeue();
             }
         }
+
         internal class OptionInfoBoolean : OptionInfo
         {
             public OptionInfoBoolean(PropertyInfo property, OptionAttribute attribute)
                 : base(property, attribute)
             {
-                
             }
 
             protected override object GetOptionValue(Queue<string> args)
@@ -57,10 +55,11 @@ namespace Atrico.Lib.CommandLineParser
                 var attribute = property.GetCustomAttribute<OptionAttribute>();
                 if (attribute == null) return null;
                 // Boolean option
-                if (property.PropertyType == typeof(bool)) return new OptionInfoBoolean(property, attribute);
+                if (property.PropertyType == typeof (bool)) return new OptionInfoBoolean(property, attribute);
                 // String
-                if (property.PropertyType == typeof(string)) return new OptionInfoString(property, attribute);
-                return null;
+                if (property.PropertyType == typeof (string)) return new OptionInfoString(property, attribute);
+                // Unsupported
+                throw new UnSupportedOptionTypeException(MakeSwitch(property.Name), property.PropertyType);
             }
 
             protected OptionInfo(PropertyInfo property, OptionAttribute attribute)
@@ -74,8 +73,8 @@ namespace Atrico.Lib.CommandLineParser
             {
                 if (_fulfilled) return argsIn;
                 var argsArray = argsIn.ToArray();
-                var argsOut = argsArray.TakeWhile(item=>!_name.Equals(RemoveSwitch(item)));
-                var argsRemaining = argsArray.SkipWhile(item=>!_name.Equals(RemoveSwitch(item))).ToArray();
+                var argsOut = argsArray.TakeWhile(item => !_name.Equals(RemoveSwitch(item)));
+                var argsRemaining = argsArray.SkipWhile(item => !_name.Equals(RemoveSwitch(item))).ToArray();
                 if (!argsRemaining.Any()) return argsOut;
                 _fulfilled = true;
                 // Remove matched option
@@ -88,17 +87,14 @@ namespace Atrico.Lib.CommandLineParser
 
             public void Populate(object options)
             {
-                if (_attribute.Required)
-                {
-                if (!_fulfilled)
+                if (_attribute.Required && !_fulfilled)
                 {
                     throw new MissingOptionException(string.Format("{0}{1}", _switch, _property.Name));
                 }
-                    if (ReferenceEquals(_value, null))
-                    {
-                        throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, _property.Name), _property.PropertyType);
-                    }
-                    
+
+                if (_fulfilled && ReferenceEquals(_value, null))
+                {
+                    throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, _property.Name), _property.PropertyType);
                 }
                 _property.SetValue(options, _value);
             }
