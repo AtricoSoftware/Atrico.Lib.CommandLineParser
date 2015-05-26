@@ -15,14 +15,9 @@ namespace Atrico.Lib.CommandLineParser
             return arg.StartsWith(_switch);
         }
 
-        private static bool IsSwitch(ref string arg)
+        private static string RemoveSwitch(string arg)
         {
-            if (!IsSwitch(arg))
-            {
-                return false;
-            }
-            arg = arg.Substring(_switch.Length).ToLower();
-            return true;
+            return !IsSwitch(arg) ? null : arg.Substring(_switch.Length).ToLower();
         }
 
         /// <summary>
@@ -56,17 +51,18 @@ namespace Atrico.Lib.CommandLineParser
                 return typeof (T).GetProperties().Where(p => p.CanWrite).Select(OptionInfo.Create).Where(oi => oi != null);
             }
 
-            private string PromotePartialNames(string name)
+            private string PromotePartialNames(string arg)
             {
                 // Not an option
-                if (!IsSwitch(ref name))
+                var name = RemoveSwitch(arg);
+                if (name == null)
                 {
-                    return name;
+                    return arg;
                 }
                 // Full match
                 if (_optionNames.Contains(name))
                 {
-                    return MakeSwitch(name);
+                    return arg;
                 }
                 // Partial match
                 var possible = _optionNames.Where(nm => nm.StartsWith(name)).ToArray();

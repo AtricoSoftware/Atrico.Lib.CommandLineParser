@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.CommandLineParser.Exceptions;
@@ -8,13 +10,42 @@ namespace Atrico.Lib.CommandLineParser
 {
     public static partial class Parser
     {
+        internal class OptionInfoString : OptionInfo
+        {
+            public OptionInfoString(PropertyInfo property, OptionAttribute attribute)
+                : base(property, attribute)
+            {
+                
+            }
+
+            protected override object GetOptionValue(Queue<string> args)
+            {
+                return !args.Any() ? null : args.Dequeue();
+            }
+        }
+        internal class OptionInfoBoolean : OptionInfo
+        {
+            public OptionInfoBoolean(PropertyInfo property, OptionAttribute attribute)
+                : base(property, attribute)
+            {
+                
+            }
+
+            protected override object GetOptionValue(Queue<string> args)
+            {
+                // True by existence
+                return true;
+            }
+        }
+
         [DebuggerDisplay("Option: {_name}: {_fulfilled}")]
-        internal class OptionInfo
+        internal abstract class OptionInfo
         {
             private readonly PropertyInfo _property;
             private readonly OptionAttribute _attribute;
             private readonly string _name;
             private bool _fulfilled;
+            private object _value;
 
             public string Name
             {
@@ -24,10 +55,15 @@ namespace Atrico.Lib.CommandLineParser
             public static OptionInfo Create(PropertyInfo property)
             {
                 var attribute = property.GetCustomAttribute<OptionAttribute>();
-                return attribute == null ? null : new OptionInfo(property, attribute);
+                if (attribute == null) return null;
+                // Boolean option
+                if (property.PropertyType == typeof(bool)) return new OptionInfoBoolean(property, attribute);
+                // String
+                if (property.PropertyType == typeof(string)) return new OptionInfoString(property, attribute);
+                return null;
             }
 
-            private OptionInfo(PropertyInfo property, OptionAttribute attribute)
+            protected OptionInfo(PropertyInfo property, OptionAttribute attribute)
             {
                 _property = property;
                 _attribute = attribute;
@@ -36,29 +72,35 @@ namespace Atrico.Lib.CommandLineParser
 
             public IEnumerable<string> FulFill(IEnumerable<string> argsIn)
             {
-                var args = new Queue<string>(argsIn);
-                var argsOut = new Queue<string>();
-                while (args.Count > 0)
-                {
-                    var current = args.Dequeue();
-                    var name = current;
-                    if (!_fulfilled && IsSwitch(ref name) && _name.Equals(name))
-                    {
-                        _fulfilled = true;
-                        continue;
-                    }
-                    argsOut.Enqueue(current);
-                }
-                return argsOut;
+                if (_fulfilled) return argsIn;
+                var argsArray = argsIn.ToArray();
+                var argsOut = argsArray.TakeWhile(item=>!_name.Equals(RemoveSwitch(item)));
+                var argsRemaining = argsArray.SkipWhile(item=>!_name.Equals(RemoveSwitch(item))).ToArray();
+                if (!argsRemaining.Any()) return argsOut;
+                _fulfilled = true;
+                // Remove matched option
+                var argsQueue = new Queue<string>(argsRemaining.Skip(1));
+                _value = GetOptionValue(argsQueue);
+                return argsOut.Concat(argsQueue);
             }
+
+            protected abstract object GetOptionValue(Queue<string> args);
 
             public void Populate(object options)
             {
-                if (_attribute.Required && !_fulfilled)
+                if (_attribute.Required)
+                {
+                if (!_fulfilled)
                 {
                     throw new MissingOptionException(string.Format("{0}{1}", _switch, _property.Name));
                 }
-                _property.SetValue(options, _fulfilled);
+                    if (ReferenceEquals(_value, null))
+                    {
+                        throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, _property.Name), _property.PropertyType);
+                    }
+                    
+                }
+                _property.SetValue(options, _value);
             }
         };
     }

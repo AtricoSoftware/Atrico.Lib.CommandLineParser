@@ -21,9 +21,9 @@ namespace Atrico.Lib.CommandLineParser.Test
         [Test]
         public void TestPresent()
         {
-            const string theText = "SomeText";
+            const string theText = "Some Text";
             // Arrange
-            var args = CreateArgs(string.Format("-text {0}", theText));
+            var args = CreateArgs(string.Format("-text '{0}'", theText));
 
             // Act
             var options = Parser.Parse<Options>(args);

@@ -25,9 +25,24 @@ namespace Atrico.Lib.CommandLineParser.Test
         }
 
         [Test]
-        public void TestsSimpleElements()
+        public void TestSimpleElements()
         {
             TestImplementation("-a -b cdef --g /h", new[] {"-a", "-b", "cdef", "--g", "/h"});
+        }
+        [Test]
+        public void TestQuotedString()
+        {
+            TestImplementation("-a 'string'", new[] {"-a", "string"});
+        }
+        [Test]
+        public void TestQuotedStringWithSpace()
+        {
+            TestImplementation("-a 'string with space'", new[] {"-a", "string with space"});
+        }
+        [Test]
+        public void TestQuotedStringWithMultipleSpaces()
+        {
+            TestImplementation("-a 'string  with  spaces'", new[] {"-a", "string  with  spaces"});
         }
     }
 }
