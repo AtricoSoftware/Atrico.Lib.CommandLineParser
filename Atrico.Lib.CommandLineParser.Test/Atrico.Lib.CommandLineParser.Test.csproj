@@ -61,7 +61,7 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
-    <Compile Include="TestCreateArgs - Copy.cs" />
+    <Compile Include="TestValidateOptions.cs" />
     <Compile Include="TestNullableOptionOptional.cs" />
     <Compile Include="TestStringOptionMandatory.cs" />
     <Compile Include="TestNullableOptionMandatory.cs" />

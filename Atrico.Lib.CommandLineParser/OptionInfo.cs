@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.CommandLineParser.Exceptions;
+using Atrico.Lib.CommandLineParser.Exceptions.Options;
+using Atrico.Lib.CommandLineParser.Exceptions.Parse;
 
 namespace Atrico.Lib.CommandLineParser
 {
@@ -143,13 +145,15 @@ namespace Atrico.Lib.CommandLineParser
                     return null;
                 }
                 OptionCreator creator;
+                // Check for setter
+                if (property.SetMethod == null) throw new NoSetterException(property);
                 // Supported types
                 if (_supportedTypes.TryGetValue(property.PropertyType, out creator))
                 {
                     return creator(property, attribute);
                 }
                 // Unsupported
-                throw new UnSupportedOptionTypeException(MakeSwitch(property.Name), property.PropertyType);
+                throw new UnSupportedTypeException(property);
             }
 
             protected OptionInfo(PropertyInfo property, OptionAttribute attribute)

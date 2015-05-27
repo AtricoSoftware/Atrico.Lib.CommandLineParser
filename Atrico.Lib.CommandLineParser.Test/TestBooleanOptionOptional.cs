@@ -13,7 +13,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public class Options
         {
             [Option]
-            public bool Boolean { get; set; }
+            public bool Boolean { get; private set; }
         }
 
         [Test]

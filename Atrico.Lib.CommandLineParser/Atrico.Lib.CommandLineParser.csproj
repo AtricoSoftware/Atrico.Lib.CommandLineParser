@@ -44,15 +44,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\OptionAttribute.cs" />
-    <Compile Include="Exceptions\AmbiguousOptionException.cs" />
+    <Compile Include="Exceptions\Options\NoSetterException.cs" />
+    <Compile Include="Exceptions\ParseException.cs" />
+    <Compile Include="Exceptions\Parse\AmbiguousOptionException.cs" />
     <Compile Include="Exceptions\InvalidOptionsPropertyException.cs" />
     <Compile Include="Exceptions\CommandLineParserException.cs" />
-    <Compile Include="Exceptions\MissingOptionException.cs" />
-    <Compile Include="Exceptions\MissingOptionParameterException.cs" />
-    <Compile Include="Exceptions\OptionParameterWrongTypeException.cs" />
-    <Compile Include="Exceptions\UnSupportedOptionTypeException.cs" />
-    <Compile Include="Exceptions\UnexpectedOptionException.cs" />
+    <Compile Include="Exceptions\Parse\MissingOptionException.cs" />
+    <Compile Include="Exceptions\Parse\MissingOptionParameterException.cs" />
+    <Compile Include="Exceptions\Parse\OptionParameterWrongTypeException.cs" />
+    <Compile Include="Exceptions\Options\UnSupportedTypeException.cs" />
+    <Compile Include="Exceptions\Parse\UnexpectedOptionException.cs" />
     <Compile Include="OptionInfo.cs" />
+    <Compile Include="Parser.Validate.cs" />
     <Compile Include="ParserT.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +70,7 @@
   <ItemGroup>
     <Content Include="_TODO.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,6 +4,7 @@ using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.CommandLineParser.Exceptions;
+using Atrico.Lib.CommandLineParser.Exceptions.Parse;
 using Atrico.Lib.Testing;
 using Atrico.Lib.Testing.NUnitAttributes;
 
@@ -25,7 +26,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public class Options
         {
             [Option]
-            public T? Nullable { get; set; }
+            public T? Nullable { get; private set; }
         }
 
         [Test]
