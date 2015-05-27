@@ -9,4 +9,4 @@ usage
 VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
 	optional/no default for non nullable type
-	default with required
+	default with required (warning)

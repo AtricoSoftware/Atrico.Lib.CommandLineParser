@@ -16,6 +16,7 @@ namespace Atrico.Lib.CommandLineParser
         /// <returns>Populated options or null if error</returns>
         public static T Parse<T>(string[] args) where T : class, new()
         {
+            //Validate<T>(); // Ignore warnings
             var parser = new ParserT<T>(args);
             return parser.Result;
         }
