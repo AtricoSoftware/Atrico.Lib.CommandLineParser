@@ -5,6 +5,8 @@ TODO
 ~~~~
 default values
 usage
-valid options check
+
+VALID OPTIONS CHECK
+~~~~~~~~~~~~~~~~~~~
 	optional/no default for non nullable type
 	default with required
