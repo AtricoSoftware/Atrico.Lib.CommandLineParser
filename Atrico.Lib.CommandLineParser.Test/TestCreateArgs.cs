@@ -7,13 +7,14 @@ using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
+ 
     [TestFixture]
-    public class TestCreateArgs : TestFixtureBase
+    public class TestCreateArgs : CommandLineParserTestFixture
     {
         private static void TestImplementation(string commandline, IEnumerable<string> expected)
         {
             // Act
-            var args = Helpers.CreateArgs(commandline);
+            var args = CreateArgs(commandline);
 
             // Assert
             Assert.That(Value.Of(args).Is().EqualTo(expected), "Correct args");

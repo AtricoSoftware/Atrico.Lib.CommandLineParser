@@ -20,9 +20,9 @@ namespace Atrico.Lib.CommandLineParser.Test
     [TestFixture(typeof (ulong))]
     [TestFixture(typeof (float))]
     [TestFixture(typeof (double))]
-    public class TestPodOptionMandatory<T> : TestFixtureBase where T : struct
+    public class TestPodOptionMandatory<T> : CommandLineParserTestFixture<TestPodOptionMandatory<T>.Options> where T : struct
     {
-        private class Options
+        public class Options
         {
             [Option(Required = true)]
             public T Pod { get; set; }
@@ -33,7 +33,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         {
             var value = RandomValues.Value<T>();
             // Arrange
-            var args = Helpers.CreateArgs("-pod {0}", value);
+            var args = CreateArgs("-pod {0}", value);
 
             // Act
             var options = Parser.Parse<Options>(args);
@@ -47,7 +47,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissing()
         {
             // Arrange
-            var args = Helpers.CreateArgs("");
+            var args = CreateArgs("");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -61,7 +61,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissingParameter()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-pod");
+            var args = CreateArgs("-pod");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -75,7 +75,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestParameterWrongType()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-pod text");
+            var args = CreateArgs("-pod text");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));

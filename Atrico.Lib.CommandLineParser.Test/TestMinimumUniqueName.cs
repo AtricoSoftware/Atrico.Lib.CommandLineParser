@@ -10,9 +10,9 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestMinimumUniqueName : TestFixtureBase
+    public class TestMinimumUniqueName : CommandLineParserTestFixture<TestMinimumUniqueName.Options>
     {
-        private class Options
+        public class Options
         {
             [Option]
             public bool Ab { get; set; }
@@ -28,7 +28,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestAmbiguous()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-a");
+            var args = CreateArgs("-a");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -42,7 +42,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestExactButSubset()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-ab");
+            var args = CreateArgs("-ab");
 
             // Act
             var options = Parser.Parse<Options>(args);
@@ -58,7 +58,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMinimumUnique()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-abc");
+            var args = CreateArgs("-abc");
 
             // Act
             var options = Parser.Parse<Options>(args);

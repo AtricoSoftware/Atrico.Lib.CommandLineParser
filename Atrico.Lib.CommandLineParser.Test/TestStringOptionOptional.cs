@@ -10,9 +10,9 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestStringOptionOptional : TestFixtureBase
+    public class TestStringOptionOptional : CommandLineParserTestFixture<TestStringOptionOptional.Options>
     {
-        private class Options
+        public class Options
         {
             [Option]
             public string Text { get; set; }
@@ -23,7 +23,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         {
             const string theText = "Some Text";
             // Arrange
-            var args = Helpers.CreateArgs(string.Format("-text '{0}'", theText));
+            var args = CreateArgs(string.Format("-text '{0}'", theText));
 
             // Act
             var options = Parser.Parse<Options>(args);
@@ -37,7 +37,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissing()
         {
             // Arrange
-            var args = Helpers.CreateArgs("");
+            var args = CreateArgs("");
 
             // Act
             var options = Parser.Parse<Options>(args);
@@ -51,7 +51,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissingParameter()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-text");
+            var args = CreateArgs("-text");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));

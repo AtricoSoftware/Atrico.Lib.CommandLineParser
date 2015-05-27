@@ -20,9 +20,9 @@ namespace Atrico.Lib.CommandLineParser.Test
     [TestFixture(typeof (ulong))]
     [TestFixture(typeof (float))]
     [TestFixture(typeof (double))]
-    public class TestNullableOptionMandatory<T> : TestFixtureBase where T : struct
+    public class TestNullableOptionMandatory<T> : CommandLineParserTestFixture<TestNullableOptionMandatory<T>.Options> where T : struct
     {
-        private class Options
+        public class Options
         {
             [Option(Required = true)]
             public T? Nullable { get; set; }
@@ -31,9 +31,10 @@ namespace Atrico.Lib.CommandLineParser.Test
         [Test]
         public void TestPresent()
         {
+            RandomValues.DefaultCharsToInclude = RandomValueGenerator.CharsToInclude.AlphaNumeric;
             var value = RandomValues.Value<T>();
             // Arrange
-            var args = Helpers.CreateArgs("-nullable {0}", value);
+            var args = CreateArgs("-nullable {0}", value);
 
             // Act
             var options = Parser.Parse<Options>(args);
@@ -47,7 +48,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissing()
         {
             // Arrange
-            var args = Helpers.CreateArgs("");
+            var args = CreateArgs("");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -61,7 +62,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissingParameter()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-nullable");
+            var args = CreateArgs("-nullable");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -75,7 +76,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestParameterWrongType()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-nullable text");
+            var args = CreateArgs("-nullable text");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));

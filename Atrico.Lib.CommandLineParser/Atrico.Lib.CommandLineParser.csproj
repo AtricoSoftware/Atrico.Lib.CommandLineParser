@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Attributes\OptionAttribute.cs" />
     <Compile Include="Exceptions\AmbiguousOptionException.cs" />
+    <Compile Include="Exceptions\InvalidOptionsPropertyException.cs" />
     <Compile Include="Exceptions\CommandLineParserException.cs" />
     <Compile Include="Exceptions\MissingOptionException.cs" />
     <Compile Include="Exceptions\MissingOptionParameterException.cs" />

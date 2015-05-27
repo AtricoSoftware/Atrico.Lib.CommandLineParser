@@ -10,9 +10,9 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestBooleanOptionMandatory : TestFixtureBase
+    public class TestBooleanOptionMandatory : CommandLineParserTestFixture<TestBooleanOptionMandatory.Options>
     {
-        private class Options
+        public class Options
         {
             [Option(Required = true)]
             public bool Boolean { get; set; }
@@ -22,7 +22,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestPresent()
         {
             // Arrange
-            var args = Helpers.CreateArgs("-boolean");
+            var args = CreateArgs("-boolean");
 
             // Act
             var options = Parser.Parse<Options>(args);
@@ -36,7 +36,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestMissing()
         {
             // Arrange
-            var args = Helpers.CreateArgs("");
+            var args = CreateArgs("");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
