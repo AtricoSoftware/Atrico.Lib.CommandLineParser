@@ -1,6 +1,5 @@
 ﻿IN PROGRESS
 ~~~~~~~~~~~
-	non supported type
 
 TODO
 ~~~~
@@ -11,4 +10,4 @@ VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
 	optional/no default for non nullable type
 	default with required (warning)
-	no/private setter
+	default with nullable? (warning)
