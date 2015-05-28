@@ -80,6 +80,22 @@ namespace Atrico.Lib.CommandLineParser
                     throw new OptionParameterWrongTypeException(Name, typeof (T), valueStr, ex);
                 }
             }
+
+            protected override void EnsureValueType(object obj)
+            {
+                Convert.ChangeType(obj, typeof(T));
+            }
+
+            protected override IEnumerable<string> CalculateWarnings()
+            {
+                var warnings = new List<string>(base.CalculateWarnings());
+                // Nullable with default
+                if (_hasDefaultValue) warnings.Add(string.Format("Property is nullable but has default value: {0} ({1})", _property.Name, _defaultValue));
+                // Mandatory Nullable
+                if (_required) warnings.Add(string.Format("Property is nullable but mandatory: {0}", _property.Name));
+                return warnings;
+            }
+
         }
 
         private class OptionInfoString : OptionInfo
@@ -146,28 +162,33 @@ namespace Atrico.Lib.CommandLineParser
                 {typeof (double?), d => new OptionInfoNullable<double>(d)},
             };
 
-            private readonly PropertyInfo _property;
-            private readonly bool _required;
+            protected readonly PropertyInfo _property;
+            protected readonly bool _required;
+            protected readonly bool _hasDefaultValue;
+            protected readonly object _defaultValue;
             private readonly string _name;
             private bool _fulfilled;
             private object _value;
+            private readonly Lazy<IEnumerable<string>> _warnings;
 
             public string Name
             {
                 get { return _name; }
             }
 
+            public IEnumerable<string> Warnings
+            {
+                get { return _warnings.Value; }
+            }
+
             public static OptionInfo Create(PropertyInfo property)
             {
                 var attribute = property.GetCustomAttribute<OptionAttribute>();
-                if (attribute == null)
-                {
-                    return null;
-                }
-                OptionCreator creator;
+                if (attribute == null) return null;
                 // Check for setter
                 if (property.SetMethod == null) throw new NoSetterException(property);
                 // Supported types
+                OptionCreator creator;
                 if (!_supportedTypes.TryGetValue(property.PropertyType, out creator)) throw new UnSupportedTypeException(property);
 
                 // Create option
@@ -180,19 +201,34 @@ namespace Atrico.Lib.CommandLineParser
                 _property = details.Property;
                 _required = details.Required;
                 _name = _property.Name.ToLower();
+                _hasDefaultValue = details.HasDefaultValue;
+                _defaultValue = details.DefaultValue;
+                _warnings = new Lazy<IEnumerable<string>>(CalculateWarnings);
                 // Default value correct type?
                 if (details.HasDefaultValue)
                 {
                     try
                     {
-                    Convert.ChangeType(details.DefaultValue, _property.PropertyType);
-
+                        EnsureValueType(details.DefaultValue);
                     }
                     catch (Exception ex)
                     {
                         throw new DefaultValueWrongTypeException(_property, details.DefaultValue, ex);
                     }
                 }
+            }
+
+            protected virtual void EnsureValueType(object obj)
+            {
+                Convert.ChangeType(obj, _property.PropertyType);               
+            }
+
+            protected virtual  IEnumerable<string> CalculateWarnings()
+            {
+                var warnings = new List<string>();
+                // Mandatory with default
+                if (_required && _hasDefaultValue) warnings.Add(string.Format("Property is mandatory but has default value: {0} ({1})", _property.Name, _defaultValue));
+                return warnings;
             }
 
             public IEnumerable<string> FulFill(IEnumerable<string> argsIn)

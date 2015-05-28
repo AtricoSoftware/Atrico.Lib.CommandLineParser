@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -28,11 +27,12 @@ namespace Atrico.Lib.CommandLineParser.Test
                 public bool Property { get; private set; }
             }
 
-           public class OptionalNonNullableWithDefault
+            public class OptionalNonNullableWithDefault
             {
-                [Option(DefaultValue=123)]
+                [Option(DefaultValue = 123)]
                 public int Property { get; private set; }
             }
+
             #endregion
 
             #region Invalid
@@ -62,18 +62,36 @@ namespace Atrico.Lib.CommandLineParser.Test
                 public int Property { get; private set; }
             }
 
-           public class DefaultValueWrongType
+            public class DefaultValueWrongType
             {
                 [Option(DefaultValue = "text")]
                 public int Property { get; private set; }
             }
+
             #endregion
 
             #region Warnings
- 
-            #endregion
 
-         }
+            public class MandatoryWithDefault
+            {
+                [Option(Required = true, DefaultValue = 123)]
+                public int Property { get; private set; }
+            }
+
+            public class NullableWithDefault
+            {
+                [Option(DefaultValue = 123)]
+                public int? Property { get; private set; }
+            }
+
+            public class MandatoryNullable
+            {
+                [Option(Required = true)]
+                public int? Property { get; private set; }
+            }
+
+            #endregion
+        }
 
         #region Valid
 
@@ -82,18 +100,19 @@ namespace Atrico.Lib.CommandLineParser.Test
         {
             Implementation<Options.Empty>();
         }
+
         [Test]
         public void TestValid()
         {
             Implementation<Options.Valid>();
         }
 
-
         [Test]
         public void TestOptionalNonNullableWithDefault()
         {
             Implementation<Options.OptionalNonNullableWithDefault>();
         }
+
         #endregion
 
         #region Invalid
@@ -115,6 +134,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         {
             Implementation<Options.OptionalNonNullableNoDefault, OptionalNonNullableException>();
         }
+
         [Test]
         public void TestDefaultValueWrongType()
         {
@@ -124,6 +144,24 @@ namespace Atrico.Lib.CommandLineParser.Test
         #endregion
 
         #region Warnings
+
+        [Test]
+        public void TestMandatoryWithDefault()
+        {
+            Implementation<Options.MandatoryWithDefault>(true);
+        }
+
+        [Test]
+        public void TestNullableWithDefault()
+        {
+            Implementation<Options.NullableWithDefault>(true);
+        }
+
+        [Test]
+        public void TestMandatoryNullable()
+        {
+            Implementation<Options.MandatoryNullable>(true);
+        }
 
         #endregion
 

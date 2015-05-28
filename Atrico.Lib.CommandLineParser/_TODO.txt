@@ -1,14 +1,13 @@
 ﻿IN PROGRESS
 ~~~~~~~~~~~
-	optional/default for non nullable type
+default values
 
 TODO
 ~~~~
-default values
 usage
 help switch
 
 VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
-	default with required (warning)
 	default with nullable? (warning)
+	required with nullable? (warning)

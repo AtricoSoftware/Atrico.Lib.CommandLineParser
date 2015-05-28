@@ -23,7 +23,10 @@ namespace Atrico.Lib.CommandLineParser
         {
             var warnings = new List<string>();
             var options = GetOptionInformation<T>().ToArray();
-
+            foreach (var option in options)
+            {
+                warnings.AddRange(option.Warnings);
+            }
             return warnings;
         }
     }

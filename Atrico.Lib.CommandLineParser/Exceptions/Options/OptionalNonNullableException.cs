@@ -8,7 +8,7 @@ namespace Atrico.Lib.CommandLineParser.Exceptions.Options
     public class OptionalNonNullableException : InvalidOptionsPropertyException
     {
         public OptionalNonNullableException(PropertyInfo property)
-            : base(property, string.Format("Property is non-nullable but marked as optional with no default value: {0}", property.Name))
+            : base(property, string.Format("Property is non-nullable but is optional with no default value: {0}", property.Name))
         {
         }
     }

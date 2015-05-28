@@ -32,6 +32,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         [Test]
         public void TestPresent()
         {
+            RandomValues.DefaultCharsToInclude = RandomValueGenerator.CharsToInclude.AlphaNumeric;
             var value = RandomValues.Value<T>();
             // Arrange
             var args = CreateArgs("-nullable {0}", value);
