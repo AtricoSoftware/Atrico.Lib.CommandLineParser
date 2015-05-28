@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Atrico.Lib.CommandLineParser.Exceptions;
 
 namespace Atrico.Lib.CommandLineParser
 {
@@ -17,9 +15,7 @@ namespace Atrico.Lib.CommandLineParser
         /// <returns>Populated options or null if error</returns>
         public static T Parse<T>(string[] args) where T : class, new()
         {
-            Validate<T>(); // Ignore warnings
-            var parser = new ParserT<T>(args);
-            return parser.Result;
+            return new ParserT<T>(args).Result;
         }
 
         /// <summary>
@@ -32,6 +28,5 @@ namespace Atrico.Lib.CommandLineParser
             // TODO
             return new String[] {};
         }
-
-     }
+    }
 }

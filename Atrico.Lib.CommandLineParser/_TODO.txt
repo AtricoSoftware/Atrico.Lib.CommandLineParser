@@ -5,6 +5,7 @@ TODO
 ~~~~
 default values
 usage
+help switch
 
 VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~

@@ -96,7 +96,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         [Test]
         public void TestNoDefaultForOptionalNonNullable()
         {
-            Implementation<Options.NoDefaultForOptionalNonNullable, Exception>();
+            Implementation<Options.NoDefaultForOptionalNonNullable, OptionalNonNullableException>();
         }
 
         #endregion

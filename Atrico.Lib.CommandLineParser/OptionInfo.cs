@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Atrico.Lib.CommandLineParser.Attributes;
-using Atrico.Lib.CommandLineParser.Exceptions;
 using Atrico.Lib.CommandLineParser.Exceptions.Options;
 using Atrico.Lib.CommandLineParser.Exceptions.Parse;
 
@@ -12,10 +11,51 @@ namespace Atrico.Lib.CommandLineParser
 {
     public static partial class Parser
     {
-        internal class OptionInfoPod<T> : OptionInfo where T : struct
+        internal class OptionDetails
         {
-            public OptionInfoPod(PropertyInfo property, OptionAttribute attribute)
-                : base(property, attribute)
+            public PropertyInfo Property { get; private set; }
+            public bool Required { get; private set; }
+            public bool HasDefaultValue { get; private set; }
+            public object DefaultValue { get; set; }
+
+            public OptionDetails(PropertyInfo property, OptionAttribute attribute)
+            {
+                Property = property;
+                Required = attribute.Required;
+            }
+        }
+
+        private class OptionInfoPod<T> : OptionInfo where T : struct
+        {
+            public OptionInfoPod(OptionDetails details)
+                : base(details)
+            {
+                // Check for optional/default value
+                if (!details.Required && !details.HasDefaultValue) throw new OptionalNonNullableException(details.Property);
+            }
+
+            protected override object GetOptionValue(Queue<string> args)
+            {
+                if (!args.Any())
+                {
+                    return null;
+                }
+                var valueStr = args.Dequeue();
+                try
+                {
+                    return (T) Convert.ChangeType(valueStr, typeof (T));
+                }
+                catch (Exception ex)
+                {
+                    throw new OptionParameterWrongTypeException(Name, typeof (T), valueStr, ex);
+                }
+            }
+        }
+
+        private class OptionInfoNullable<T> : OptionInfo where T : struct
+        {
+            public OptionInfoNullable(OptionDetails details)
+                : base(details)
             {
             }
 
@@ -37,35 +77,10 @@ namespace Atrico.Lib.CommandLineParser
             }
         }
 
-        internal class OptionInfoNullable<T> : OptionInfo where T : struct
+        private class OptionInfoString : OptionInfo
         {
-            public OptionInfoNullable(PropertyInfo property, OptionAttribute attribute)
-                : base(property, attribute)
-            {
-            }
-
-            protected override object GetOptionValue(Queue<string> args)
-            {
-                if (!args.Any())
-                {
-                    return null;
-                }
-                var valueStr = args.Dequeue();
-                try
-                {
-                    return (T) Convert.ChangeType(valueStr, typeof (T));
-                }
-                catch (Exception ex)
-                {
-                    throw new OptionParameterWrongTypeException(Name, typeof (T), valueStr, ex);
-                }
-            }
-        }
-
-        internal class OptionInfoString : OptionInfo
-        {
-            public OptionInfoString(PropertyInfo property, OptionAttribute attribute)
-                : base(property, attribute)
+            public OptionInfoString(OptionDetails details)
+                : base(details)
             {
             }
 
@@ -75,10 +90,10 @@ namespace Atrico.Lib.CommandLineParser
             }
         }
 
-        internal class OptionInfoBoolean : OptionInfo
+        private class OptionInfoBoolean : OptionInfo
         {
-            public OptionInfoBoolean(PropertyInfo property, OptionAttribute attribute)
-                : base(property, attribute)
+            public OptionInfoBoolean(OptionDetails details)
+                : base(details)
             {
             }
 
@@ -92,42 +107,42 @@ namespace Atrico.Lib.CommandLineParser
         [DebuggerDisplay("Option: {_name}: {_fulfilled}")]
         internal abstract class OptionInfo
         {
-            private delegate OptionInfo OptionCreator(PropertyInfo property, OptionAttribute attribute);
+            private delegate OptionInfo OptionCreator(OptionDetails details);
 
             private static readonly IDictionary<Type, OptionCreator> _supportedTypes = new Dictionary<Type, OptionCreator>
             {
                 // Boolean option
-                {typeof (bool), (p, a) => new OptionInfoBoolean(p, a)},
+                {typeof (bool), d => new OptionInfoBoolean(d)},
                 // String
-                {typeof (string), (p, a) => new OptionInfoString(p, a)},
+                {typeof (string), d => new OptionInfoString(d)},
                 // POD types
-                {typeof (char), (p, a) => new OptionInfoPod<char>(p, a)},
-                {typeof (byte), (p, a) => new OptionInfoPod<byte>(p, a)},
-                {typeof (sbyte), (p, a) => new OptionInfoPod<sbyte>(p, a)},
-                {typeof (short), (p, a) => new OptionInfoPod<short>(p, a)},
-                {typeof (ushort), (p, a) => new OptionInfoPod<ushort>(p, a)},
-                {typeof (int), (p, a) => new OptionInfoPod<int>(p, a)},
-                {typeof (uint), (p, a) => new OptionInfoPod<uint>(p, a)},
-                {typeof (long), (p, a) => new OptionInfoPod<long>(p, a)},
-                {typeof (ulong), (p, a) => new OptionInfoPod<ulong>(p, a)},
-                {typeof (float), (p, a) => new OptionInfoPod<float>(p, a)},
-                {typeof (double), (p, a) => new OptionInfoPod<double>(p, a)},
+                {typeof (char), d => new OptionInfoPod<char>(d)},
+                {typeof (byte), d => new OptionInfoPod<byte>(d)},
+                {typeof (sbyte), d => new OptionInfoPod<sbyte>(d)},
+                {typeof (short), d => new OptionInfoPod<short>(d)},
+                {typeof (ushort), d => new OptionInfoPod<ushort>(d)},
+                {typeof (int), d => new OptionInfoPod<int>(d)},
+                {typeof (uint), d => new OptionInfoPod<uint>(d)},
+                {typeof (long), d => new OptionInfoPod<long>(d)},
+                {typeof (ulong), d => new OptionInfoPod<ulong>(d)},
+                {typeof (float), d => new OptionInfoPod<float>(d)},
+                {typeof (double), d => new OptionInfoPod<double>(d)},
                 // Nullable POD types
-                {typeof (char?), (p, a) => new OptionInfoNullable<char>(p, a)},
-                {typeof (byte?), (p, a) => new OptionInfoNullable<byte>(p, a)},
-                {typeof (sbyte?), (p, a) => new OptionInfoNullable<sbyte>(p, a)},
-                {typeof (short?), (p, a) => new OptionInfoNullable<short>(p, a)},
-                {typeof (ushort?), (p, a) => new OptionInfoNullable<ushort>(p, a)},
-                {typeof (int?), (p, a) => new OptionInfoNullable<int>(p, a)},
-                {typeof (uint?), (p, a) => new OptionInfoNullable<uint>(p, a)},
-                {typeof (long?), (p, a) => new OptionInfoNullable<long>(p, a)},
-                {typeof (ulong?), (p, a) => new OptionInfoNullable<ulong>(p, a)},
-                {typeof (float?), (p, a) => new OptionInfoNullable<float>(p, a)},
-                {typeof (double?), (p, a) => new OptionInfoNullable<double>(p, a)},
+                {typeof (char?), d => new OptionInfoNullable<char>(d)},
+                {typeof (byte?), d => new OptionInfoNullable<byte>(d)},
+                {typeof (sbyte?), d => new OptionInfoNullable<sbyte>(d)},
+                {typeof (short?), d => new OptionInfoNullable<short>(d)},
+                {typeof (ushort?), d => new OptionInfoNullable<ushort>(d)},
+                {typeof (int?), d => new OptionInfoNullable<int>(d)},
+                {typeof (uint?), d => new OptionInfoNullable<uint>(d)},
+                {typeof (long?), d => new OptionInfoNullable<long>(d)},
+                {typeof (ulong?), d => new OptionInfoNullable<ulong>(d)},
+                {typeof (float?), d => new OptionInfoNullable<float>(d)},
+                {typeof (double?), d => new OptionInfoNullable<double>(d)},
             };
 
             private readonly PropertyInfo _property;
-            private readonly OptionAttribute _attribute;
+            private readonly bool _required;
             private readonly string _name;
             private bool _fulfilled;
             private object _value;
@@ -148,19 +163,17 @@ namespace Atrico.Lib.CommandLineParser
                 // Check for setter
                 if (property.SetMethod == null) throw new NoSetterException(property);
                 // Supported types
-                if (_supportedTypes.TryGetValue(property.PropertyType, out creator))
-                {
-                    return creator(property, attribute);
-                }
-                // Unsupported
-                throw new UnSupportedTypeException(property);
+                if (!_supportedTypes.TryGetValue(property.PropertyType, out creator)) throw new UnSupportedTypeException(property);
+                // Create option
+                var details = new OptionDetails(property, attribute);
+                return creator(details);
             }
 
-            protected OptionInfo(PropertyInfo property, OptionAttribute attribute)
+            protected OptionInfo(OptionDetails details)
             {
-                _property = property;
-                _attribute = attribute;
-                _name = property.Name.ToLower();
+                _property = details.Property;
+                _required = details.Required;
+                _name = _property.Name.ToLower();
             }
 
             public IEnumerable<string> FulFill(IEnumerable<string> argsIn)
@@ -187,7 +200,7 @@ namespace Atrico.Lib.CommandLineParser
 
             public void Populate(object options)
             {
-                if (_attribute.Required && !_fulfilled)
+                if (_required && !_fulfilled)
                 {
                     throw new MissingOptionException(string.Format("{0}{1}", _switch, _property.Name));
                 }

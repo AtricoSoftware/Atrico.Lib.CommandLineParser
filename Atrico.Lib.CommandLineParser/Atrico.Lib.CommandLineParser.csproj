@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\OptionAttribute.cs" />
+    <Compile Include="Exceptions\Options\OptionalNonNullableException.cs" />
     <Compile Include="Exceptions\Options\NoSetterException.cs" />
     <Compile Include="Exceptions\ParseException.cs" />
     <Compile Include="Exceptions\Parse\AmbiguousOptionException.cs" />
