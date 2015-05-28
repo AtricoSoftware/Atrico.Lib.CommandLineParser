@@ -10,7 +10,7 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestStringOptionOptionalWithDefault : CommandLineParserTestFixture<TestStringOptionOptional.Options>
+    public class TestOptionOptionalWithDefaultString : CommandLineParserTestFixture<TestOptionOptionalString.Options>
     {
         public class Options
         {

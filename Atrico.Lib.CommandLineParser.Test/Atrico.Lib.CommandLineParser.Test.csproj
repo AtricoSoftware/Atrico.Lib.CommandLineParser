@@ -62,20 +62,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="TestBooleanOptionOptionalWithDefault.cs" />
-    <Compile Include="TestNullableOptionOptionalWithDefault.cs" />
-    <Compile Include="TestPodOptionOptionalWithDefault.cs" />
-    <Compile Include="TestStringOptionOptionalWithDefault.cs" />
+    <Compile Include="TestOptionOptionalWithDefaultNullable.cs" />
+    <Compile Include="TestOptionOptionalWithDefaultPod.cs" />
+    <Compile Include="TestOptionOptionalWithDefaultString.cs" />
     <Compile Include="TestValidateOptions.cs" />
-    <Compile Include="TestNullableOptionOptional.cs" />
-    <Compile Include="TestStringOptionMandatory.cs" />
-    <Compile Include="TestNullableOptionMandatory.cs" />
-    <Compile Include="TestPodOptionMandatory.cs" />
-    <Compile Include="TestBooleanOptionMandatory.cs" />
+    <Compile Include="TestOptionOptionalNullable.cs" />
+    <Compile Include="TestOptionMandatoryString.cs" />
+    <Compile Include="TestOptionMandatoryNullable.cs" />
+    <Compile Include="TestOptionMandatoryPod.cs" />
+    <Compile Include="TestOptionMandatoryBoolean.cs" />
     <Compile Include="TestInvalidCommandLine.cs" />
     <Compile Include="TestMinimumUniqueName.cs" />
-    <Compile Include="TestBooleanOptionOptional.cs" />
+    <Compile Include="TestOptionOptionalBoolean.cs" />
     <Compile Include="TestCreateArgs.cs" />
-    <Compile Include="TestStringOptionOptional.cs" />
+    <Compile Include="TestOptionOptionalString.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

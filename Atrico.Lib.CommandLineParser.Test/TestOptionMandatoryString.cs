@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
@@ -10,27 +11,27 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestStringOptionOptional : CommandLineParserTestFixture<TestStringOptionOptional.Options>
+    public class TestOptionMandatoryString : CommandLineParserTestFixture<TestOptionMandatoryString.Options>
     {
         public class Options
         {
-            [Option]
+            [Option(Required = true)]
             public string Text { get; private set; }
         }
 
         [Test]
         public void TestPresent()
         {
-            const string theText = "Some Text";
+            const string value = "abcde";
             // Arrange
-            var args = CreateArgs(string.Format("-text '{0}'", theText));
+            var args = CreateArgs("-text {0}", value);
 
             // Act
             var options = Parser.Parse<Options>(args);
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Text).Is().EqualTo(theText), "Value is correct");
+            Assert.That(Value.Of(options.Text).Is().EqualTo(value), "Value is correct");
         }
 
         [Test]
@@ -40,11 +41,11 @@ namespace Atrico.Lib.CommandLineParser.Test
             var args = CreateArgs("");
 
             // Act
-            var options = Parser.Parse<Options>(args);
+            var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Text).Is().Null(), "Value is null");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionException)), "Exception thrown");
+            Debug.WriteLine(ex.Message);
         }
 
         [Test]
@@ -59,6 +60,20 @@ namespace Atrico.Lib.CommandLineParser.Test
             // Assert
             Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionParameterException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
+        }
+
+        // No wrong type for string
+
+        [Test]
+        public void TestUsageSummary()
+        {
+            // Act
+            var usage = Parser.GetUsage<Options>().Where(ln => ln.StartsWith(ExeName)).ToArray();
+
+            // Assert
+            foreach (var line in usage) Debug.WriteLine(line);
+            Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} -Text <{1}>", ExeName, typeof (string).Name)), "Summary");
         }
     }
 }

@@ -7,19 +7,14 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestBooleanOptionOptionalWithDefault : CommandLineParserTestFixture<TestOptionOptionalBoolean.Options>
+    public class TestOptionOptionalBoolean : CommandLineParserTestFixture<TestOptionOptionalBoolean.Options>
     {
         public class Options
         {
-            [Option(DefaultValue = true)]
+            [Option]
             public bool Boolean { get; private set; }
         }
 
-        public TestBooleanOptionOptionalWithDefault()
-            : base(true)
-        {
-            
-        }
         [Test]
         public void TestPresent()
         {
@@ -45,7 +40,7 @@ namespace Atrico.Lib.CommandLineParser.Test
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Boolean).Is().True(), "Switch is true");
+            Assert.That(Value.Of(options.Boolean).Is().False(), "Switch is false");
         }
     }
 }

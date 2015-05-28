@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Linq;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
@@ -21,28 +21,27 @@ namespace Atrico.Lib.CommandLineParser.Test
     [TestFixture(typeof (ulong))]
     [TestFixture(typeof (float))]
     [TestFixture(typeof (double))]
-    public class TestNullableOptionOptionalWithDefault<T> : CommandLineParserTestFixture<TestNullableOptionOptional<T>.Options> where T : struct
+    public class TestOptionMandatoryPod<T> : CommandLineParserTestFixture<TestOptionMandatoryPod<T>.Options> where T : struct
     {
         public class Options
         {
-            [Option(DefaultValue = 65)]
-            public T? Nullable { get; private set; }
+            [Option(Required = true)]
+            public T Pod { get; private set; }
         }
 
         [Test]
         public void TestPresent()
         {
-            RandomValues.DefaultCharsToInclude = RandomValueGenerator.CharsToInclude.AlphaNumeric;
             var value = RandomValues.Value<T>();
             // Arrange
-            var args = CreateArgs("-nullable {0}", value);
+            var args = CreateArgs("-pod {0}", value);
 
             // Act
             var options = Parser.Parse<Options>(args);
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Nullable).Is().EqualTo(value), "Value is correct");
+            Assert.That(Value.Of(options.Pod).Is().EqualTo(value), "Value is correct");
         }
 
         [Test]
@@ -52,18 +51,18 @@ namespace Atrico.Lib.CommandLineParser.Test
             var args = CreateArgs("");
 
             // Act
-            var options = Parser.Parse<Options>(args);
+            var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Nullable).Is().EqualTo(Convert.ChangeType(65, typeof(T))), "Value is correct");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionException)), "Exception thrown");
+            Debug.WriteLine(ex.Message);
         }
 
         [Test]
         public void TestMissingParameter()
         {
             // Arrange
-            var args = CreateArgs("-nullable");
+            var args = CreateArgs("-pod");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -77,7 +76,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestParameterWrongType()
         {
             // Arrange
-            var args = CreateArgs("-nullable text");
+            var args = CreateArgs("-pod text");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -85,6 +84,18 @@ namespace Atrico.Lib.CommandLineParser.Test
             // Assert
             Assert.That(Value.Of(ex).Is().TypeOf(typeof (OptionParameterWrongTypeException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
+        }
+
+        [Test]
+        public void TestUsageSummary()
+        {
+            // Act
+            var usage = Parser.GetUsage<Options>().Where(ln => ln.StartsWith(ExeName)).ToArray();
+
+            // Assert
+            foreach (var line in usage) Debug.WriteLine(line);
+            Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} -Pod <{1}>", ExeName, typeof (T).Name)), "Summary");
         }
     }
 }
