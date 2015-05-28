@@ -39,16 +39,18 @@ namespace Atrico.Lib.CommandLineParser
                 if (!details.Required && !details.HasDefaultValue) throw new OptionalNonNullableException(details.Property);
             }
 
-            protected override object GetOptionValue(Queue<string> args)
+            protected override bool GetOptionValue(Queue<string> args, out object value)
             {
                 if (!args.Any())
                 {
-                    return null;
+                    value = null;
+                    return false;
                 }
                 var valueStr = args.Dequeue();
                 try
                 {
-                    return (T) Convert.ChangeType(valueStr, typeof (T));
+                    value = (T) Convert.ChangeType(valueStr, typeof (T));
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -64,16 +66,18 @@ namespace Atrico.Lib.CommandLineParser
             {
             }
 
-            protected override object GetOptionValue(Queue<string> args)
+            protected override bool GetOptionValue(Queue<string> args, out object value)
             {
                 if (!args.Any())
                 {
-                    return null;
+                    value = null;
+                    return false;
                 }
                 var valueStr = args.Dequeue();
                 try
                 {
-                    return (T) Convert.ChangeType(valueStr, typeof (T));
+                    value = (T) Convert.ChangeType(valueStr, typeof (T));
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -81,18 +85,18 @@ namespace Atrico.Lib.CommandLineParser
                 }
             }
 
-            protected override void EnsureValueType(object obj)
+            protected override object ChangeValueType(object obj)
             {
-                Convert.ChangeType(obj, typeof (T));
+                return Convert.ChangeType(obj, typeof (T));
             }
 
             protected override IEnumerable<string> CalculateWarnings()
             {
                 var warnings = new List<string>(base.CalculateWarnings());
                 // Nullable with default
-                if (_hasDefaultValue) warnings.Add(string.Format("Property is nullable but has default value: {0} ({1})", _property.Name, _defaultValue));
+                if (HasDefaultValue) warnings.Add(string.Format("Property is nullable but has default value: {0} ({1})", Property.Name, DefaultValue));
                 // Mandatory Nullable
-                if (_required) warnings.Add(string.Format("Property is nullable but mandatory: {0}", _property.Name));
+                if (Required) warnings.Add(string.Format("Property is nullable but mandatory: {0}", Property.Name));
                 return warnings;
             }
         }
@@ -104,9 +108,11 @@ namespace Atrico.Lib.CommandLineParser
             {
             }
 
-            protected override object GetOptionValue(Queue<string> args)
+            protected override bool GetOptionValue(Queue<string> args, out object value)
             {
-                return !args.Any() ? null : args.Dequeue();
+                var hasArgs = args.Any();
+                value = hasArgs ?  args.Dequeue() : null;
+                return hasArgs;
             }
         }
 
@@ -117,10 +123,18 @@ namespace Atrico.Lib.CommandLineParser
             {
             }
 
-            protected override object GetOptionValue(Queue<string> args)
+            protected override bool GetOptionValue(Queue<string> args, out object value)
             {
                 // True by existence
+                value = true;
                 return true;
+            }
+            protected override IEnumerable<string> CalculateWarnings()
+            {
+                var warnings = new List<string>(base.CalculateWarnings());
+                // Boolean with default
+                if (HasDefaultValue) warnings.Add(string.Format("Property is boolean but has default value: {0} ({1})", Property.Name, DefaultValue));
+                return warnings;
             }
         }
 
@@ -161,12 +175,13 @@ namespace Atrico.Lib.CommandLineParser
                 {typeof (double?), d => new OptionInfoNullable<double>(d)},
             };
 
-            protected readonly PropertyInfo _property;
-            protected readonly bool _required;
-            protected readonly bool _hasDefaultValue;
-            protected readonly object _defaultValue;
+            protected readonly PropertyInfo Property;
+            protected readonly bool Required;
+            protected readonly bool HasDefaultValue;
+            protected readonly object DefaultValue;
             private readonly string _name;
             private bool _fulfilled;
+            private bool _hasValue;
             private object _value;
             private readonly Lazy<IEnumerable<string>> _warnings;
 
@@ -197,36 +212,35 @@ namespace Atrico.Lib.CommandLineParser
 
             protected OptionInfo(OptionDetails details)
             {
-                _property = details.Property;
-                _required = details.Required;
-                _name = _property.Name.ToLower();
-                _hasDefaultValue = details.HasDefaultValue;
-                _defaultValue = details.DefaultValue;
+                Property = details.Property;
+                Required = details.Required;
+                _name = Property.Name.ToLower();
+                HasDefaultValue = details.HasDefaultValue;
                 _warnings = new Lazy<IEnumerable<string>>(CalculateWarnings);
                 // Default value correct type?
                 if (details.HasDefaultValue)
                 {
                     try
                     {
-                        EnsureValueType(details.DefaultValue);
+                DefaultValue = ChangeValueType(details.DefaultValue);
                     }
                     catch (Exception ex)
                     {
-                        throw new DefaultValueWrongTypeException(_property, details.DefaultValue, ex);
+                        throw new DefaultValueWrongTypeException(Property, details.DefaultValue, ex);
                     }
                 }
             }
 
-            protected virtual void EnsureValueType(object obj)
+            protected virtual object ChangeValueType(object obj)
             {
-                Convert.ChangeType(obj, _property.PropertyType);
+                return Convert.ChangeType(obj, Property.PropertyType);
             }
 
             protected virtual IEnumerable<string> CalculateWarnings()
             {
                 var warnings = new List<string>();
                 // Mandatory with default
-                if (_required && _hasDefaultValue) warnings.Add(string.Format("Property is mandatory but has default value: {0} ({1})", _property.Name, _defaultValue));
+                if (Required && HasDefaultValue) warnings.Add(string.Format("Property is mandatory but has default value: {0} ({1})", Property.Name, DefaultValue));
                 return warnings;
             }
 
@@ -246,24 +260,25 @@ namespace Atrico.Lib.CommandLineParser
                 _fulfilled = true;
                 // Remove matched option
                 var argsQueue = new Queue<string>(argsRemaining.Skip(1));
-                _value = GetOptionValue(argsQueue);
+                _hasValue = GetOptionValue(argsQueue, out _value);
                 return argsOut.Concat(argsQueue);
             }
 
-            protected abstract object GetOptionValue(Queue<string> args);
+            protected abstract bool GetOptionValue(Queue<string> args, out object value);
 
             public void Populate(object options)
             {
-                if (_required && !_fulfilled)
+                if (Required && !_fulfilled)
                 {
-                    throw new MissingOptionException(string.Format("{0}{1}", _switch, _property.Name));
+                    throw new MissingOptionException(string.Format("{0}{1}", _switch, Property.Name));
                 }
 
-                if (_fulfilled && ReferenceEquals(_value, null))
+                if (_fulfilled && !_hasValue)
                 {
-                    throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, _property.Name), _property.PropertyType);
+                    throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, Property.Name), Property.PropertyType);
                 }
-                _property.SetValue(options, _value);
+
+                Property.SetValue(options, (!_fulfilled && HasDefaultValue) ? DefaultValue: _value);
             }
         };
     }

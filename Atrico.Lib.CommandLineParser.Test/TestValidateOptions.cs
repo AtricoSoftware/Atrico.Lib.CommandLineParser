@@ -84,6 +84,12 @@ namespace Atrico.Lib.CommandLineParser.Test
                 public int? Property { get; private set; }
             }
 
+            public class BooleanWithDefault
+            {
+                [Option(DefaultValue = true)]
+                public bool Property { get; private set; }
+            }
+
             public class MandatoryNullable
             {
                 [Option(Required = true)]
@@ -155,6 +161,12 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestNullableWithDefault()
         {
             Implementation<Options.NullableWithDefault>(true);
+        }
+
+        [Test]
+        public void TestBooleanWithDefault()
+        {
+            Implementation<Options.BooleanWithDefault>(true);
         }
 
         [Test]

@@ -28,6 +28,11 @@ namespace Atrico.Lib.CommandLineParser.Test
             public T? Nullable { get; private set; }
         }
 
+        public TestNullableOptionMandatory()
+            : base(true)
+        {
+        }
+
         [Test]
         public void TestPresent()
         {

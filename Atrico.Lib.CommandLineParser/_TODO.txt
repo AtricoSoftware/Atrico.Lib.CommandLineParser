@@ -1,6 +1,9 @@
 ﻿IN PROGRESS
 ~~~~~~~~~~~
-default values
+default values - pod o
+default values - bool o
+default values - string o
+default values - nullable o
 
 TODO
 ~~~~
@@ -9,5 +12,4 @@ help switch
 
 VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
-	default with nullable? (warning)
-	required with nullable? (warning)
+	default with boolean (warning)

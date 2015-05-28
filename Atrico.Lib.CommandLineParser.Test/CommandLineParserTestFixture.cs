@@ -9,7 +9,7 @@ using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-    public class CommandLineParserTestFixture : TestFixtureBase
+    public abstract class CommandLineParserTestFixture : TestFixtureBase
     {
         private enum State
         {
@@ -88,8 +88,15 @@ namespace Atrico.Lib.CommandLineParser.Test
         }
     }
 
-    public class CommandLineParserTestFixture<T> : CommandLineParserTestFixture where T : class, new()
+    public abstract class CommandLineParserTestFixture<T> : CommandLineParserTestFixture where T : class, new()
     {
+        private readonly bool _allowWarnings;
+
+        protected CommandLineParserTestFixture(bool allowWarnings = false)
+        {
+            _allowWarnings = allowWarnings;
+        }
+
         [Test]
         public void ValidateOptions()
         {
@@ -101,7 +108,7 @@ namespace Atrico.Lib.CommandLineParser.Test
 
             // Assert 
             Assert.That(Value.Of(ex).Is().Null(), "No Errors");
-            Assert.That(Value.Of(warnings).Is().EqualTo(new String[] {}), "No Warnings");
+            if (!_allowWarnings) Assert.That(Value.Of(warnings).Is().EqualTo(new String[] {}), "No Warnings");
         }
     }
 }
