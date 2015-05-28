@@ -17,16 +17,5 @@ namespace Atrico.Lib.CommandLineParser
         {
             return new ParserT<T>(args).Result;
         }
-
-        /// <summary>
-        ///     Gets the usage information for this type
-        /// </summary>
-        /// <typeparam name="T">Type of options class</typeparam>
-        /// <returns>Usage info as multiple lines of text</returns>
-        public static IEnumerable<string> GetUsage<T>() where T : class, new()
-        {
-            // TODO
-            return new String[] {};
-        }
     }
 }

@@ -30,6 +30,47 @@ namespace Atrico.Lib.CommandLineParser
             }
         }
 
+        private class OptionInfoBoolean : OptionInfo
+        {
+            public OptionInfoBoolean(OptionDetails details)
+                : base(details)
+            {
+            }
+
+            protected override bool GetOptionValue(Queue<string> args, out object value)
+            {
+                // True by existence
+                value = true;
+                return true;
+            }
+
+            protected override IEnumerable<string> CalculateWarnings()
+            {
+                var warnings = new List<string>(base.CalculateWarnings());
+                // Boolean with default
+                if (HasDefaultValue) warnings.Add(string.Format("Property is boolean but has default value: {0} ({1})", Property.Name, DefaultValue));
+                return warnings;
+            }
+            public override string ToString()
+            {
+                return MakeSwitch(Property.Name);
+            }
+
+        }
+        private class OptionInfoString : OptionInfo
+        {
+            public OptionInfoString(OptionDetails details)
+                : base(details)
+            {
+            }
+
+            protected override bool GetOptionValue(Queue<string> args, out object value)
+            {
+                var hasArgs = args.Any();
+                value = hasArgs ? args.Dequeue() : null;
+                return hasArgs;
+            }
+        }
         private class OptionInfoPod<T> : OptionInfo where T : struct
         {
             public OptionInfoPod(OptionDetails details)
@@ -99,44 +140,13 @@ namespace Atrico.Lib.CommandLineParser
                 if (Required) warnings.Add(string.Format("Property is nullable but mandatory: {0}", Property.Name));
                 return warnings;
             }
-        }
-
-        private class OptionInfoString : OptionInfo
-        {
-            public OptionInfoString(OptionDetails details)
-                : base(details)
+            public override string ToString()
             {
-            }
-
-            protected override bool GetOptionValue(Queue<string> args, out object value)
-            {
-                var hasArgs = args.Any();
-                value = hasArgs ?  args.Dequeue() : null;
-                return hasArgs;
+                return string.Format("{0} <{1}?>", MakeSwitch(Property.Name), typeof(T).Name);
             }
         }
 
-        private class OptionInfoBoolean : OptionInfo
-        {
-            public OptionInfoBoolean(OptionDetails details)
-                : base(details)
-            {
-            }
 
-            protected override bool GetOptionValue(Queue<string> args, out object value)
-            {
-                // True by existence
-                value = true;
-                return true;
-            }
-            protected override IEnumerable<string> CalculateWarnings()
-            {
-                var warnings = new List<string>(base.CalculateWarnings());
-                // Boolean with default
-                if (HasDefaultValue) warnings.Add(string.Format("Property is boolean but has default value: {0} ({1})", Property.Name, DefaultValue));
-                return warnings;
-            }
-        }
 
         [DebuggerDisplay("Option: {_name}: {_fulfilled}")]
         internal abstract class OptionInfo
@@ -222,7 +232,7 @@ namespace Atrico.Lib.CommandLineParser
                 {
                     try
                     {
-                DefaultValue = ChangeValueType(details.DefaultValue);
+                        DefaultValue = ChangeValueType(details.DefaultValue);
                     }
                     catch (Exception ex)
                     {
@@ -278,7 +288,12 @@ namespace Atrico.Lib.CommandLineParser
                     throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, Property.Name), Property.PropertyType);
                 }
 
-                Property.SetValue(options, (!_fulfilled && HasDefaultValue) ? DefaultValue: _value);
+                Property.SetValue(options, (!_fulfilled && HasDefaultValue) ? DefaultValue : _value);
+            }
+
+            public override string ToString()
+            {
+                return string.Format("{0} <{1}>", MakeSwitch(Property.Name), Property.PropertyType.Name);
             }
         };
     }

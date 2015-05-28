@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -11,6 +12,19 @@ namespace Atrico.Lib.CommandLineParser.Test
 {
     public abstract class CommandLineParserTestFixture : TestFixtureBase
     {
+        private static readonly string _exeName;
+
+        protected static string ExeName
+        {
+            get { return _exeName; }
+        }
+
+        static CommandLineParserTestFixture()
+        {
+            var assem = Assembly.GetEntryAssembly();
+            _exeName = assem != null ? assem.GetName().Name : "UNKNOWN";
+        }
+
         private enum State
         {
             OutsideToken,

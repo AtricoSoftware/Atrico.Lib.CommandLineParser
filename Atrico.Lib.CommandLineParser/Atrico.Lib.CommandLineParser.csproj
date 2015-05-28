@@ -57,6 +57,7 @@
     <Compile Include="Exceptions\Options\UnSupportedTypeException.cs" />
     <Compile Include="Exceptions\Parse\UnexpectedOptionException.cs" />
     <Compile Include="OptionInfo.cs" />
+    <Compile Include="Parser.Usage.cs" />
     <Compile Include="Parser.Validate.cs" />
     <Compile Include="ParserT.cs" />
     <Compile Include="Parser.cs" />
