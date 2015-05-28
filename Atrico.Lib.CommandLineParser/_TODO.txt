@@ -1,5 +1,6 @@
 ﻿IN PROGRESS
 ~~~~~~~~~~~
+	optional/default for non nullable type
 
 TODO
 ~~~~
@@ -9,6 +10,5 @@ help switch
 
 VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
-	optional/no default for non nullable type
 	default with required (warning)
 	default with nullable? (warning)

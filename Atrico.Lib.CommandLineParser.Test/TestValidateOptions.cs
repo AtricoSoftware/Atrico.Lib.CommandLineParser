@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -27,6 +28,11 @@ namespace Atrico.Lib.CommandLineParser.Test
                 public bool Property { get; private set; }
             }
 
+           public class OptionalNonNullableWithDefault
+            {
+                [Option(DefaultValue=123)]
+                public int Property { get; private set; }
+            }
             #endregion
 
             #region Invalid
@@ -50,33 +56,44 @@ namespace Atrico.Lib.CommandLineParser.Test
                 }
             }
 
-            public class NoDefaultForOptionalNonNullable
+            public class OptionalNonNullableNoDefault
             {
                 [Option]
                 public int Property { get; private set; }
             }
 
+           public class DefaultValueWrongType
+            {
+                [Option(DefaultValue = "text")]
+                public int Property { get; private set; }
+            }
             #endregion
 
             #region Warnings
  
             #endregion
-        }
+
+         }
 
         #region Valid
-
-        [Test]
-        public void TestValid()
-        {
-            Implementation<Options.Valid>();
-        }
 
         [Test]
         public void TestEmpty()
         {
             Implementation<Options.Empty>();
         }
+        [Test]
+        public void TestValid()
+        {
+            Implementation<Options.Valid>();
+        }
 
+
+        [Test]
+        public void TestOptionalNonNullableWithDefault()
+        {
+            Implementation<Options.OptionalNonNullableWithDefault>();
+        }
         #endregion
 
         #region Invalid
@@ -94,9 +111,14 @@ namespace Atrico.Lib.CommandLineParser.Test
         }
 
         [Test]
-        public void TestNoDefaultForOptionalNonNullable()
+        public void TestOptionalNonNullableNoDefault()
         {
-            Implementation<Options.NoDefaultForOptionalNonNullable, OptionalNonNullableException>();
+            Implementation<Options.OptionalNonNullableNoDefault, OptionalNonNullableException>();
+        }
+        [Test]
+        public void TestDefaultValueWrongType()
+        {
+            Implementation<Options.DefaultValueWrongType, DefaultValueWrongTypeException>();
         }
 
         #endregion

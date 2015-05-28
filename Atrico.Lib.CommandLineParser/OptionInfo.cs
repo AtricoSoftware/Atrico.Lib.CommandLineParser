@@ -16,12 +16,17 @@ namespace Atrico.Lib.CommandLineParser
             public PropertyInfo Property { get; private set; }
             public bool Required { get; private set; }
             public bool HasDefaultValue { get; private set; }
-            public object DefaultValue { get; set; }
+            public object DefaultValue { get; private set; }
 
             public OptionDetails(PropertyInfo property, OptionAttribute attribute)
             {
                 Property = property;
                 Required = attribute.Required;
+                if (attribute.HasDefaultValue)
+                {
+                    DefaultValue = attribute.DefaultValue;
+                    HasDefaultValue = true;
+                }
             }
         }
 
@@ -164,6 +169,7 @@ namespace Atrico.Lib.CommandLineParser
                 if (property.SetMethod == null) throw new NoSetterException(property);
                 // Supported types
                 if (!_supportedTypes.TryGetValue(property.PropertyType, out creator)) throw new UnSupportedTypeException(property);
+
                 // Create option
                 var details = new OptionDetails(property, attribute);
                 return creator(details);
@@ -174,6 +180,19 @@ namespace Atrico.Lib.CommandLineParser
                 _property = details.Property;
                 _required = details.Required;
                 _name = _property.Name.ToLower();
+                // Default value correct type?
+                if (details.HasDefaultValue)
+                {
+                    try
+                    {
+                    Convert.ChangeType(details.DefaultValue, _property.PropertyType);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new DefaultValueWrongTypeException(_property, details.DefaultValue, ex);
+                    }
+                }
             }
 
             public IEnumerable<string> FulFill(IEnumerable<string> argsIn)
