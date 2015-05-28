@@ -19,10 +19,10 @@ namespace Atrico.Lib.CommandLineParser.Attributes
         public bool Required { get; set; }
 
         /// <summary>
-        /// Default value for optional option
+        ///     Default value for optional option
         /// </summary>
         /// <value>
-        /// The default value to use if option is not specified
+        ///     The default value to use if option is not specified
         /// </value>
         public object DefaultValue
         {

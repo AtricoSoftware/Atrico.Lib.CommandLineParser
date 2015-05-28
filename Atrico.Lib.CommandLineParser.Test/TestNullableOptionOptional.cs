@@ -3,7 +3,6 @@ using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
-using Atrico.Lib.CommandLineParser.Exceptions;
 using Atrico.Lib.CommandLineParser.Exceptions.Parse;
 using Atrico.Lib.Testing;
 using Atrico.Lib.Testing.NUnitAttributes;

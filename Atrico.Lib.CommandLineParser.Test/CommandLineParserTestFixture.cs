@@ -9,7 +9,7 @@ using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-     public class CommandLineParserTestFixture : TestFixtureBase
+    public class CommandLineParserTestFixture : TestFixtureBase
     {
         private enum State
         {

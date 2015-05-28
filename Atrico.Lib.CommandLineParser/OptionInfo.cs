@@ -83,7 +83,7 @@ namespace Atrico.Lib.CommandLineParser
 
             protected override void EnsureValueType(object obj)
             {
-                Convert.ChangeType(obj, typeof(T));
+                Convert.ChangeType(obj, typeof (T));
             }
 
             protected override IEnumerable<string> CalculateWarnings()
@@ -95,7 +95,6 @@ namespace Atrico.Lib.CommandLineParser
                 if (_required) warnings.Add(string.Format("Property is nullable but mandatory: {0}", _property.Name));
                 return warnings;
             }
-
         }
 
         private class OptionInfoString : OptionInfo
@@ -220,10 +219,10 @@ namespace Atrico.Lib.CommandLineParser
 
             protected virtual void EnsureValueType(object obj)
             {
-                Convert.ChangeType(obj, _property.PropertyType);               
+                Convert.ChangeType(obj, _property.PropertyType);
             }
 
-            protected virtual  IEnumerable<string> CalculateWarnings()
+            protected virtual IEnumerable<string> CalculateWarnings()
             {
                 var warnings = new List<string>();
                 // Mandatory with default

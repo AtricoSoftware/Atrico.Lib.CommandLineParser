@@ -2,12 +2,10 @@
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
-using Atrico.Lib.Testing;
 using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
- 
     [TestFixture]
     public class TestCreateArgs : CommandLineParserTestFixture
     {
@@ -31,16 +29,19 @@ namespace Atrico.Lib.CommandLineParser.Test
         {
             TestImplementation("-a -b cdef --g /h", new[] {"-a", "-b", "cdef", "--g", "/h"});
         }
+
         [Test]
         public void TestQuotedString()
         {
             TestImplementation("-a 'string'", new[] {"-a", "string"});
         }
+
         [Test]
         public void TestQuotedStringWithSpace()
         {
             TestImplementation("-a 'string with space'", new[] {"-a", "string with space"});
         }
+
         [Test]
         public void TestQuotedStringWithMultipleSpaces()
         {

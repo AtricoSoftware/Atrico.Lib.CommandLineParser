@@ -3,7 +3,6 @@ using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
-using Atrico.Lib.CommandLineParser.Exceptions;
 using Atrico.Lib.CommandLineParser.Exceptions.Parse;
 using Atrico.Lib.Testing;
 using Atrico.Lib.Testing.NUnitAttributes;
@@ -58,7 +57,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof(MissingOptionParameterException)), "Exception thrown");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionParameterException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
     }

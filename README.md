@@ -19,10 +19,18 @@ private class Options
     [Option, Required = true]
     public bool Mandatory { get; set; }
 }
+
+// Returns parsed options or exception if parsing failed 
+var option = Parser.Parse<Options>(args);
+
+// Throws exception if Options contains errors that will stop the parser
+//     e.g. Unsupported type, property has no setter
+// Returns list of warnings which will not stop the parser but perhaps indicate a coding error
+//     e.g. Default value on required property
+var warnings = Parser.Validate<Options>();
 ```
 ## Roadmap
 
-* Implement types other than boolean
 * Get Usage information
 * Auto add help
 * Multiple commands (like git commit, git push, etc)
