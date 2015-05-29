@@ -14,20 +14,18 @@ namespace Atrico.Lib.CommandLineParser
     {
         internal class OptionDetails
         {
+            private readonly OptionAttribute _attribute;
+
             public PropertyInfo Property { get; private set; }
-            public bool Required { get; private set; }
-            public bool HasDefaultValue { get; private set; }
-            public object DefaultValue { get; private set; }
+            public bool Required { get { return _attribute.Required; } }
+            public bool HasDefaultValue { get { return _attribute.HasDefaultValue; } }
+            public object DefaultValue { get { return _attribute.DefaultValue; } }
+            public string Description { get { return _attribute.Description; } }
 
             public OptionDetails(PropertyInfo property, OptionAttribute attribute)
             {
+                _attribute = attribute;
                 Property = property;
-                Required = attribute.Required;
-                if (attribute.HasDefaultValue)
-                {
-                    DefaultValue = attribute.DefaultValue;
-                    HasDefaultValue = true;
-                }
             }
         }
 
@@ -72,6 +70,7 @@ namespace Atrico.Lib.CommandLineParser
             protected readonly bool Required;
             protected readonly bool HasDefaultValue;
             protected readonly object DefaultValue;
+            protected readonly string Description;
             private bool _fulfilled;
             private bool _hasValue;
             private object _value;
@@ -107,6 +106,7 @@ namespace Atrico.Lib.CommandLineParser
                 Property = details.Property;
                 Required = details.Required;
                 HasDefaultValue = details.HasDefaultValue;
+                Description = details.Description;
                 _warnings = new Lazy<IEnumerable<string>>(CalculateWarnings);
                 // Default value correct type?
                 if (details.HasDefaultValue)
@@ -203,6 +203,11 @@ namespace Atrico.Lib.CommandLineParser
                 get
                 {
                     var detail = new StringBuilder();
+                    // Descritpion
+                    if (Description != null)
+                    {
+                        detail.Append(Description);
+                    }
                     // Default value
                     if (HasDefaultValue)
                     {

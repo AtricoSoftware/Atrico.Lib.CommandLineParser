@@ -1,10 +1,10 @@
 ﻿IN PROGRESS
 ~~~~~~~~~~~
+usage details - text aligned - common ascii table object?
 
 TODO
 ~~~~
 usage help text
-usage details - text aligned - common ascii table object?
 
 help switch
 commands

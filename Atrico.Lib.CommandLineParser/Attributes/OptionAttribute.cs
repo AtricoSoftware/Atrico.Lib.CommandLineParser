@@ -34,6 +34,11 @@ namespace Atrico.Lib.CommandLineParser.Attributes
             }
         }
 
+        /// <summary>
+        ///     Description for display in usage
+        /// </summary>
+        public string Description { get; set; }
+
         internal bool HasDefaultValue { get; private set; }
     }
 }
