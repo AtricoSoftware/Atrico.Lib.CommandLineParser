@@ -1,4 +1,6 @@
-﻿using Atrico.Lib.Assertions;
+﻿using System.Diagnostics;
+using System.Linq;
+using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
@@ -7,7 +9,7 @@ using Atrico.Lib.Testing.NUnitAttributes;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestBooleanOptionOptionalWithDefault : CommandLineParserTestFixture<TestOptionOptionalBoolean.Options>
+    public class TestOptionOptionalWithDefaultBoolean : CommandLineParserTestFixture<TestOptionOptionalBoolean.Options>
     {
         public class Options
         {
@@ -15,11 +17,11 @@ namespace Atrico.Lib.CommandLineParser.Test
             public bool Boolean { get; private set; }
         }
 
-        public TestBooleanOptionOptionalWithDefault()
+        public TestOptionOptionalWithDefaultBoolean()
             : base(true)
         {
-            
         }
+
         [Test]
         public void TestPresent()
         {
@@ -46,6 +48,18 @@ namespace Atrico.Lib.CommandLineParser.Test
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
             Assert.That(Value.Of(options.Boolean).Is().True(), "Switch is true");
+        }
+
+        [Test]
+        public void TestUsageSummary()
+        {
+            // Act
+            var usage = Parser.GetUsage<Options>(Parser.UsageDetails.Summary).ToArray();
+
+            // Assert
+            foreach (var line in usage) Debug.WriteLine(line);
+            Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Boolean]", ExeName)), "Summary");
         }
     }
 }

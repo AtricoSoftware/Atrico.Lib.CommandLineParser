@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.IO;
 using System.Text;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -10,20 +10,22 @@ using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-    public abstract class CommandLineParserTestFixture : TestFixtureBase
+    public abstract class CommandLineParserTestFixture : TestFixtureBase2
     {
-        private static readonly string _exeName;
-
-        protected static string ExeName
+        protected CommandLineParserTestFixture()
         {
-            get { return _exeName; }
+            // Setup parser to use mock Run Context
+            Parser.RunContextInfo = MockRunContext;
+            ExeName = Path.GetFileNameWithoutExtension(MockRunContext.EntryAssemblyPath);
+            AssemblyName = MockRunContext.EntryAssemblyName;
+            AssemblyVersion = MockRunContext.EntryAssemblyVersion;
+            AssemblyCopyright = MockRunContext.EntryAssemblyCopyright;
         }
 
-        static CommandLineParserTestFixture()
-        {
-            var assem = Assembly.GetEntryAssembly();
-            _exeName = assem != null ? assem.GetName().Name : "UNKNOWN";
-        }
+        protected readonly string ExeName;
+        protected readonly string AssemblyName;
+        protected readonly Version AssemblyVersion;
+        protected readonly string AssemblyCopyright;
 
         private enum State
         {

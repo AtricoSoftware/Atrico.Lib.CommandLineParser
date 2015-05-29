@@ -3,11 +3,16 @@
 
 TODO
 ~~~~
-usage info - bool o w/d
-usage info - string o w/d
-usage info - pod o w/d
-usage info - null o w/d
+usage help text
+usage details - bool o w/d
+usage details - string o w/d
+usage details - pod o w/d
+usage details - null o w/d
 help switch
+commands
+multiple modes
 
 VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
+	single command
+	ambiguous modes

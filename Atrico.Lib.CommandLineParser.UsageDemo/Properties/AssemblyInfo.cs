@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Atrico.Lib.CommandLineParser.UsageDemo")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Transport for London")]
+[assembly: AssemblyCompany("Atrico Software")]
 [assembly: AssemblyProduct("Atrico.Lib.CommandLineParser.UsageDemo")]
-[assembly: AssemblyCopyright("Copyright © Transport for London 2015")]
+[assembly: AssemblyCopyright("Copyright © Atrico Software 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

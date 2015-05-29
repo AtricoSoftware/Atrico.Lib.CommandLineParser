@@ -42,6 +42,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Atrico.Lib.Testing.1.3.4.0\lib\net452\Atrico.Lib.Testing.dll</HintPath>
     </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1502.0911\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -61,7 +64,8 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
-    <Compile Include="TestBooleanOptionOptionalWithDefault.cs" />
+    <Compile Include="TestUsageAppInfo.cs" />
+    <Compile Include="TestOptionOptionalWithDefaultBoolean.cs" />
     <Compile Include="TestOptionOptionalWithDefaultNullable.cs" />
     <Compile Include="TestOptionOptionalWithDefaultPod.cs" />
     <Compile Include="TestOptionOptionalWithDefaultString.cs" />
@@ -76,6 +80,7 @@
     <Compile Include="TestOptionOptionalBoolean.cs" />
     <Compile Include="TestCreateArgs.cs" />
     <Compile Include="TestOptionOptionalString.cs" />
+    <Compile Include="_MergeToLib\Atrico.Lib.Testing\TestFixtureBase2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -49,7 +49,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestUsageSummary()
         {
             // Act
-            var usage = Parser.GetUsage<Options>().ToArray();
+            var usage = Parser.GetUsage<Options>(Parser.UsageDetails.Summary).ToArray();
 
             // Assert
             foreach (var line in usage) Debug.WriteLine(line);
