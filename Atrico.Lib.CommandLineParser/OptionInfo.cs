@@ -31,7 +31,6 @@ namespace Atrico.Lib.CommandLineParser
             }
         }
 
- 
         [DebuggerDisplay("Option: {_name}: {_fulfilled}")]
         internal abstract class OptionInfo
         {
@@ -73,7 +72,6 @@ namespace Atrico.Lib.CommandLineParser
             protected readonly bool Required;
             protected readonly bool HasDefaultValue;
             protected readonly object DefaultValue;
-            private readonly string _name;
             private bool _fulfilled;
             private bool _hasValue;
             private object _value;
@@ -81,7 +79,7 @@ namespace Atrico.Lib.CommandLineParser
 
             public string Name
             {
-                get { return _name; }
+                get { return Property.Name; }
             }
 
             public IEnumerable<string> Warnings
@@ -108,7 +106,6 @@ namespace Atrico.Lib.CommandLineParser
             {
                 Property = details.Property;
                 Required = details.Required;
-                _name = Property.Name.ToLower();
                 HasDefaultValue = details.HasDefaultValue;
                 _warnings = new Lazy<IEnumerable<string>>(CalculateWarnings);
                 // Default value correct type?
@@ -134,7 +131,7 @@ namespace Atrico.Lib.CommandLineParser
             {
                 var warnings = new List<string>();
                 // Mandatory with default
-                if (Required && HasDefaultValue) warnings.Add(string.Format("Property is mandatory but has default value: {0} ({1})", Property.Name, DefaultValue));
+                if (Required && HasDefaultValue) warnings.Add(string.Format("Property is mandatory but has default value: {0} ({1})", Name, DefaultValue));
                 return warnings;
             }
 
@@ -145,8 +142,8 @@ namespace Atrico.Lib.CommandLineParser
                     return argsIn;
                 }
                 var argsArray = argsIn.ToArray();
-                var argsOut = argsArray.TakeWhile(item => !_name.Equals(RemoveSwitch(item)));
-                var argsRemaining = argsArray.SkipWhile(item => !_name.Equals(RemoveSwitch(item))).ToArray();
+                var argsOut = argsArray.TakeWhile(item => !string.Equals(Name, RemoveSwitch(item), StringComparison.OrdinalIgnoreCase));
+                var argsRemaining = argsArray.SkipWhile(item => !string.Equals(Name, RemoveSwitch(item), StringComparison.OrdinalIgnoreCase)).ToArray();
                 if (!argsRemaining.Any())
                 {
                     return argsOut;
@@ -164,12 +161,12 @@ namespace Atrico.Lib.CommandLineParser
             {
                 if (Required && !_fulfilled)
                 {
-                    throw new MissingOptionException(string.Format("{0}{1}", _switch, Property.Name));
+                    throw new MissingOptionException(string.Format("{0}{1}", _switch, Name));
                 }
 
                 if (_fulfilled && !_hasValue)
                 {
-                    throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, Property.Name), Property.PropertyType);
+                    throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, Name), Property.PropertyType);
                 }
 
                 Property.SetValue(options, (!_fulfilled && HasDefaultValue) ? DefaultValue : _value);
@@ -177,20 +174,43 @@ namespace Atrico.Lib.CommandLineParser
 
             public override string ToString()
             {
-                // Name
-                var summary = new StringBuilder(UsageName);
-                // Parameter
-                if (!String.IsNullOrWhiteSpace(UsageType))
+                return Summary;
+            }
+
+            public string Summary
+            {
+                get
                 {
-                    summary.AppendFormat(" <{0}>", UsageType);
+                    // Name
+                    var summary = new StringBuilder(UsageName);
+                    // Parameter
+                    if (!String.IsNullOrWhiteSpace(UsageType))
+                    {
+                        summary.AppendFormat(" <{0}>", UsageType);
+                    }
+                    // Optional?
+                    if (!Required)
+                    {
+                        summary.Insert(0, '[');
+                        summary.Append(']');
+                    }
+                    return summary.ToString();
                 }
-                // Optional?
-                if (!Required)
+            }
+
+            public string Details
+            {
+                get
                 {
-                    summary.Insert(0, '[');
-                    summary.Append(']');
+                    var detail = new StringBuilder();
+                    // Default value
+                    if (HasDefaultValue)
+                    {
+                        if (detail.Length > 0) detail.Append(' ');
+                        detail.AppendFormat("(default = {0})", DefaultValue);
+                    }
+                    return detail.ToString();
                 }
-                return summary.ToString();
             }
 
             protected abstract string UsageName { get; }
@@ -206,13 +226,12 @@ namespace Atrico.Lib.CommandLineParser
 
             protected override string UsageName
             {
-                get { return MakeSwitch(Property.Name); }
+                get { return MakeSwitch(Name); }
             }
         }
 
         internal abstract class OptionInfoParameterisedSwitch : OptionInfoSwitch
         {
-
             protected OptionInfoParameterisedSwitch(OptionDetails details) : base(details)
             {
             }

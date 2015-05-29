@@ -73,5 +73,17 @@ namespace Atrico.Lib.CommandLineParser.Test
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
             Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Text <{1}>]", ExeName, typeof (string).Name)), "Summary");
         }
+
+        [Test]
+        public void TestUsageParameterDetails()
+        {
+            // Act
+            var usage = Parser.GetUsage<Options>(Parser.UsageDetails.ParameterDetails).ToArray();
+
+            // Assert
+            foreach (var line in usage) Debug.WriteLine(line);
+            Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of detail lines");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Text: (default = default)")), "Detail");
+        }
     }
 }

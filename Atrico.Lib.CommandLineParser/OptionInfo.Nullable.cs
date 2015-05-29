@@ -42,9 +42,9 @@ namespace Atrico.Lib.CommandLineParser
             {
                 var warnings = new List<string>(base.CalculateWarnings());
                 // Nullable with default
-                if (HasDefaultValue) warnings.Add(string.Format("Property is nullable but has default value: {0} ({1})", Property.Name, DefaultValue));
+                if (HasDefaultValue) warnings.Add(string.Format("Property is nullable but has default value: {0} ({1})", Name, DefaultValue));
                 // Mandatory Nullable
-                if (Required) warnings.Add(string.Format("Property is nullable but mandatory: {0}", Property.Name));
+                if (Required) warnings.Add(string.Format("Property is nullable but mandatory: {0}", Name));
                 return warnings;
             }
 

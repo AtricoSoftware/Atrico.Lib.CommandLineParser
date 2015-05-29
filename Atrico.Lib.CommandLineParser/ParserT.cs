@@ -53,7 +53,7 @@ namespace Atrico.Lib.CommandLineParser
                 // Find (writeable) properties with attribute
                 _options = GetOptionInformation<T>().ToArray();
                 // Store all option names
-                _optionNames = _options.Select(opt => opt.Name);
+                _optionNames = _options.Select(opt => opt.Name.ToLower());
                 // Check for ambiguity and promote partial names
                 _args = args.Select(PromotePartialNames);
             }
@@ -67,12 +67,12 @@ namespace Atrico.Lib.CommandLineParser
                     return arg;
                 }
                 // Full match
-                if (_optionNames.Contains(name))
+                if (_optionNames.Contains(name.ToLower()))
                 {
                     return arg;
                 }
                 // Partial match
-                var possible = _optionNames.Where(nm => nm.StartsWith(name)).ToArray();
+                var possible = _optionNames.Where(nm => nm.StartsWith(name, StringComparison.OrdinalIgnoreCase)).ToArray();
                 // One found
                 if (possible.Length == 1)
                 {

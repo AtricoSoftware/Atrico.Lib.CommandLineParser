@@ -25,9 +25,9 @@ namespace Atrico.Lib.CommandLineParser
         {
             AppInfo = 0x01,
             Summary = 0x02,
-            ParameterDetails = 0x03,
+            ParameterDetails = 0x04,
 
-            Full = Summary | ParameterDetails
+            Full = AppInfo | Summary | ParameterDetails
         }
 
         /// <summary>
@@ -37,8 +37,8 @@ namespace Atrico.Lib.CommandLineParser
         /// <returns>Usage info as multiple lines of text</returns>
         public static IEnumerable<string> GetUsage<T>(UsageDetails details = UsageDetails.Full) where T : class, new()
         {
+            var options = GetOptionInformation<T>().ToArray();
             var lines = new List<string>();
-            var parameterDetails = new List<string>();
             // AppInfo
             if (details.HasFlag(UsageDetails.AppInfo))
             {
@@ -48,22 +48,29 @@ namespace Atrico.Lib.CommandLineParser
                 lines.Add(RunContextInfo.EntryAssemblyCopyright);
             }
             // Summary
-            if (details.HasFlag(UsageDetails.Summary))
+            if (details.HasFlag(UsageDetails.Summary) && options.Any())
             {
                 if (lines.Any()) lines.Add(string.Empty);
                 var line = new StringBuilder(Path.GetFileNameWithoutExtension(RunContextInfo.EntryAssemblyPath));
-                foreach (var option in GetOptionInformation<T>())
+                foreach (var option in options)
                 {
                     line.AppendFormat(" {0}", option);
-                    // TODO - Update parameter details
                 }
                 lines.Add(line.ToString());
             }
             // Parameter Details
-            if (details.HasFlag(UsageDetails.ParameterDetails) && parameterDetails.Any())
+            if (details.HasFlag(UsageDetails.ParameterDetails))
             {
-                if (lines.Any()) lines.Add(string.Empty);
-                lines.AddRange(parameterDetails);
+                var paramDetails = options.Select(opt => Tuple.Create(opt.Name, opt.Details)).Where(tup => !string.IsNullOrWhiteSpace(tup.Item2)).ToArray();
+                if (paramDetails.Any())
+                {
+                    if (lines.Any()) lines.Add(string.Empty);
+                    foreach (var detail in paramDetails)
+                    {
+                        // TODO align as table
+                        lines.Add(string.Format("{0}: {1}", detail.Item1, detail.Item2));
+                    }
+                }
             }
             return lines;
         }
