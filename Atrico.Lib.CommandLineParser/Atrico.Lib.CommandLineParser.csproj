@@ -56,6 +56,10 @@
     <Compile Include="Exceptions\Parse\OptionParameterWrongTypeException.cs" />
     <Compile Include="Exceptions\Options\UnSupportedTypeException.cs" />
     <Compile Include="Exceptions\Parse\UnexpectedOptionException.cs" />
+    <Compile Include="OptionInfo.Pod.cs" />
+    <Compile Include="OptionInfo.Nullable.cs" />
+    <Compile Include="OptionInfo.String.cs" />
+    <Compile Include="OptionInfo.Boolean.cs" />
     <Compile Include="OptionInfo.cs" />
     <Compile Include="Parser.Usage.cs" />
     <Compile Include="Parser.Validate.cs" />

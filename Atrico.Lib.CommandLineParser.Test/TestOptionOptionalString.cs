@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
@@ -60,5 +61,18 @@ namespace Atrico.Lib.CommandLineParser.Test
             Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionParameterException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
+
+        [Test]
+        public void TestUsageSummary()
+        {
+            // Act
+            var usage = Parser.GetUsage<Options>().ToArray();
+
+            // Assert
+            foreach (var line in usage) Debug.WriteLine(line);
+            Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Text <{1}>]", ExeName, typeof(string).Name)), "Summary");
+        }
+
     }
 }

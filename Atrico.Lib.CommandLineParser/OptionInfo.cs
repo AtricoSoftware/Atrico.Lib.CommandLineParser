@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.CommandLineParser.Exceptions.Options;
 using Atrico.Lib.CommandLineParser.Exceptions.Parse;
@@ -30,124 +31,7 @@ namespace Atrico.Lib.CommandLineParser
             }
         }
 
-        private class OptionInfoBoolean : OptionInfo
-        {
-            public OptionInfoBoolean(OptionDetails details)
-                : base(details)
-            {
-            }
-
-            protected override bool GetOptionValue(Queue<string> args, out object value)
-            {
-                // True by existence
-                value = true;
-                return true;
-            }
-
-            protected override IEnumerable<string> CalculateWarnings()
-            {
-                var warnings = new List<string>(base.CalculateWarnings());
-                // Boolean with default
-                if (HasDefaultValue) warnings.Add(string.Format("Property is boolean but has default value: {0} ({1})", Property.Name, DefaultValue));
-                return warnings;
-            }
-            public override string ToString()
-            {
-                return MakeSwitch(Property.Name);
-            }
-
-        }
-        private class OptionInfoString : OptionInfo
-        {
-            public OptionInfoString(OptionDetails details)
-                : base(details)
-            {
-            }
-
-            protected override bool GetOptionValue(Queue<string> args, out object value)
-            {
-                var hasArgs = args.Any();
-                value = hasArgs ? args.Dequeue() : null;
-                return hasArgs;
-            }
-        }
-        private class OptionInfoPod<T> : OptionInfo where T : struct
-        {
-            public OptionInfoPod(OptionDetails details)
-                : base(details)
-            {
-                // Check for optional/default value
-                if (!details.Required && !details.HasDefaultValue) throw new OptionalNonNullableException(details.Property);
-            }
-
-            protected override bool GetOptionValue(Queue<string> args, out object value)
-            {
-                if (!args.Any())
-                {
-                    value = null;
-                    return false;
-                }
-                var valueStr = args.Dequeue();
-                try
-                {
-                    value = (T) Convert.ChangeType(valueStr, typeof (T));
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    throw new OptionParameterWrongTypeException(Name, typeof (T), valueStr, ex);
-                }
-            }
-        }
-
-        private class OptionInfoNullable<T> : OptionInfo where T : struct
-        {
-            public OptionInfoNullable(OptionDetails details)
-                : base(details)
-            {
-            }
-
-            protected override bool GetOptionValue(Queue<string> args, out object value)
-            {
-                if (!args.Any())
-                {
-                    value = null;
-                    return false;
-                }
-                var valueStr = args.Dequeue();
-                try
-                {
-                    value = (T) Convert.ChangeType(valueStr, typeof (T));
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    throw new OptionParameterWrongTypeException(Name, typeof (T), valueStr, ex);
-                }
-            }
-
-            protected override object ChangeValueType(object obj)
-            {
-                return Convert.ChangeType(obj, typeof (T));
-            }
-
-            protected override IEnumerable<string> CalculateWarnings()
-            {
-                var warnings = new List<string>(base.CalculateWarnings());
-                // Nullable with default
-                if (HasDefaultValue) warnings.Add(string.Format("Property is nullable but has default value: {0} ({1})", Property.Name, DefaultValue));
-                // Mandatory Nullable
-                if (Required) warnings.Add(string.Format("Property is nullable but mandatory: {0}", Property.Name));
-                return warnings;
-            }
-            public override string ToString()
-            {
-                return string.Format("{0} <{1}?>", MakeSwitch(Property.Name), typeof(T).Name);
-            }
-        }
-
-
-
+ 
         [DebuggerDisplay("Option: {_name}: {_fulfilled}")]
         internal abstract class OptionInfo
         {
@@ -293,8 +177,50 @@ namespace Atrico.Lib.CommandLineParser
 
             public override string ToString()
             {
-                return string.Format("{0} <{1}>", MakeSwitch(Property.Name), Property.PropertyType.Name);
+                // Name
+                var summary = new StringBuilder(UsageName);
+                // Parameter
+                if (!String.IsNullOrWhiteSpace(UsageType))
+                {
+                    summary.AppendFormat(" <{0}>", UsageType);
+                }
+                // Optional?
+                if (!Required)
+                {
+                    summary.Insert(0, '[');
+                    summary.Append(']');
+                }
+                return summary.ToString();
             }
+
+            protected abstract string UsageName { get; }
+            protected abstract string UsageType { get; }
         };
+
+        internal abstract class OptionInfoSwitch : OptionInfo
+        {
+            protected OptionInfoSwitch(OptionDetails details)
+                : base(details)
+            {
+            }
+
+            protected override string UsageName
+            {
+                get { return MakeSwitch(Property.Name); }
+            }
+        }
+
+        internal abstract class OptionInfoParameterisedSwitch : OptionInfoSwitch
+        {
+
+            protected OptionInfoParameterisedSwitch(OptionDetails details) : base(details)
+            {
+            }
+
+            protected override string UsageType
+            {
+                get { return Property.PropertyType.Name; }
+            }
+        }
     }
 }

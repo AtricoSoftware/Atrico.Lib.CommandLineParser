@@ -3,10 +3,6 @@
 
 TODO
 ~~~~
-usage - bool o
-usage - string o
-usage - pod o
-usage - null o
 usage - bool o w/d
 usage - string o w/d
 usage - pod o w/d

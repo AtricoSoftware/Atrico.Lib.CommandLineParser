@@ -96,7 +96,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestUsageSummary()
         {
             // Act
-            var usage = Parser.GetUsage<Options>().Where(ln => ln.StartsWith(ExeName)).ToArray();
+            var usage = Parser.GetUsage<Options>().ToArray();
 
             // Assert
             foreach (var line in usage) Debug.WriteLine(line);
