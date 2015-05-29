@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Atrico.Lib.CommandLineParser._MergeToLib.Atrico.Lib.Common
+namespace Atrico.Lib.Common.Console
 {
     /// <summary>
     ///     Write a table to the console

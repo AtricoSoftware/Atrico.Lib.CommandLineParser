@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Atrico.Lib.CommandLineParser._MergeToLib.Atrico.Lib.Common;
 using Atrico.Lib.Common;
+using Atrico.Lib.Common.Console;
 
 namespace Atrico.Lib.CommandLineParser
 {
