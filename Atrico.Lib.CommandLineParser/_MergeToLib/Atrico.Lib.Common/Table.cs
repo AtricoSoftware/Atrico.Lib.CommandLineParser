@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
+// ReSharper disable once CheckNamespace
 namespace Atrico.Lib.Common.Console
 {
     /// <summary>
     ///     Write a table to the console
     /// </summary>
-    public class ConsoleTable
+    public class Table
     {
         private readonly IList<IList<object>> _columns = new List<IList<object>>();
 
