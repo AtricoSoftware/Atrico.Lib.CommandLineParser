@@ -1,6 +1,5 @@
 ﻿IN PROGRESS
 ~~~~~~~~~~~
-usage details - text aligned - common ascii table object?
 
 TODO
 ~~~~

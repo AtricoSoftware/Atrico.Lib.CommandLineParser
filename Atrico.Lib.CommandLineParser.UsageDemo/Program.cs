@@ -5,22 +5,22 @@ namespace Atrico.Lib.CommandLineParser.UsageDemo
 {
     internal class Options
     {
-        [Option(Required = true, Description="Some help text")]
+        [Option(Required = true, Description="Mandatory boolean")]
         private bool BoolMand { get; set; }
 
-        [Option]
+        [Option(Description="Optional boolean")]
         private bool BoolOpt { get; set; }
 
-        [Option(Required = true)]
+        [Option(Required = true, Description="Mandatory integer")]
         private int IntMand { get; set; }
 
-        [Option(DefaultValue = 1.23f)]
+        [Option(DefaultValue = 1.23f, Description="Optional float")]
         private float FloatOpt { get; set; }
 
-        [Option(Required = true)]
+        [Option(Required = true, Description="Mandatory byte?")]
         private byte? NullByteMand { get; set; }
 
-        [Option]
+        [Option(Description="Optional char?")]
         private char? NullCharOpt { get; set; }
     }
 

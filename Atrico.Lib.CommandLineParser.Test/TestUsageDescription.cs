@@ -25,6 +25,15 @@ namespace Atrico.Lib.CommandLineParser.Test
             public bool Boolean { get; private set; }
         }
 
+        public class OptionsMultiplePropreties
+        {
+            [Option(Description = _description)]
+            public bool Short { get; private set; }
+
+            [Option(Description = _description)]
+            public bool MuchLonger { get; private set; }
+        }
+
         [Test]
         public void TestNoDefault()
         {
@@ -47,6 +56,19 @@ namespace Atrico.Lib.CommandLineParser.Test
             foreach (var line in usage) Debug.WriteLine(line);
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of lines");
             Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Boolean: {0} (default = True)", _description, "Description and default")));
+        }
+
+        [Test]
+        public void TestmultiplePropertiesAlign()
+        {
+            // Act
+            var usage = Parser.GetUsage<OptionsMultiplePropreties>(Parser.UsageDetails.ParameterDetails).ToArray();
+
+            // Assert
+            foreach (var line in usage) Debug.WriteLine(line);
+            Assert.That(Value.Of(usage).Count().Is().EqualTo(2), "Number of lines");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Short:      {0}", _description, "Short")));
+            Assert.That(Value.Of(usage[1]).Is().EqualTo(string.Format("MuchLonger: {0}", _description, "Longer")));
         }
     }
 }

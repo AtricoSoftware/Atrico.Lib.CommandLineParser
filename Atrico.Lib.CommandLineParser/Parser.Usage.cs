@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Atrico.Lib.CommandLineParser._MergeToLib.Atrico.Lib.Common;
 using Atrico.Lib.Common;
 
 namespace Atrico.Lib.CommandLineParser
@@ -62,15 +63,13 @@ namespace Atrico.Lib.CommandLineParser
             if (details.HasFlag(UsageDetails.ParameterDetails))
             {
                 var paramDetails = options.Select(opt => Tuple.Create(opt.Name, opt.Details)).Where(tup => !string.IsNullOrWhiteSpace(tup.Item2)).ToArray();
-                if (paramDetails.Any())
+                var table = new ConsoleTable();
+                foreach (var detail in paramDetails)
                 {
-                    if (lines.Any()) lines.Add(string.Empty);
-                    foreach (var detail in paramDetails)
-                    {
-                        // TODO align as table
-                        lines.Add(string.Format("{0}: {1}", detail.Item1, detail.Item2));
-                    }
+                    table.AppendRow(string.Format("{0}:", detail.Item1), detail.Item2);
                 }
+                if (lines.Any() && table.Rows > 0) lines.Add(string.Empty);
+                lines.AddRange(table.Tabulate());
             }
             return lines;
         }
