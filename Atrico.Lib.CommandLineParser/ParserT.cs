@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Atrico.Lib.CommandLineParser.Exceptions;
 using Atrico.Lib.CommandLineParser.Exceptions.Parse;
 using Atrico.Lib.Common.Collections;
@@ -28,7 +29,7 @@ namespace Atrico.Lib.CommandLineParser
 
         private static IEnumerable<OptionInfo> GetOptionInformation<T>() where T : class, new()
         {
-            return typeof (T).GetProperties().Select(OptionInfo.Create);
+            return typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Select(OptionInfo.Create);
         }
 
         /// <summary>

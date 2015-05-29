@@ -3,10 +3,10 @@
 
 TODO
 ~~~~
-usage - bool o w/d
-usage - string o w/d
-usage - pod o w/d
-usage - null o w/d
+usage info - bool o w/d
+usage info - string o w/d
+usage info - pod o w/d
+usage info - null o w/d
 help switch
 
 VALID OPTIONS CHECK
