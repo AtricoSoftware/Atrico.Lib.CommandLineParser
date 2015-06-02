@@ -21,6 +21,7 @@ namespace Atrico.Lib.CommandLineParser
             public bool HasDefaultValue { get { return _attribute.HasDefaultValue; } }
             public object DefaultValue { get { return _attribute.DefaultValue; } }
             public string Description { get { return _attribute.Description; } }
+            public int Position {get { return _attribute.Position; }}
 
             public OptionDetails(PropertyInfo property, OptionAttribute attribute)
             {
@@ -66,7 +67,8 @@ namespace Atrico.Lib.CommandLineParser
                 {typeof (double?), d => new OptionInfoNullable<double>(d)},
             };
 
-            protected readonly PropertyInfo Property;
+            public int Position { get; private set; }
+            public readonly PropertyInfo Property;
             protected readonly bool Required;
             protected readonly bool HasDefaultValue;
             protected readonly object DefaultValue;
@@ -107,6 +109,7 @@ namespace Atrico.Lib.CommandLineParser
                 Required = details.Required;
                 HasDefaultValue = details.HasDefaultValue;
                 Description = details.Description;
+                Position = details.Position;
                 _warnings = new Lazy<IEnumerable<string>>(CalculateWarnings);
                 // Default value correct type?
                 if (details.HasDefaultValue)

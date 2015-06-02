@@ -29,7 +29,7 @@ namespace Atrico.Lib.CommandLineParser
 
         private static IEnumerable<OptionInfo> GetOptionInformation<T>() where T : class, new()
         {
-            return typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Select(OptionInfo.Create);
+            return typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Select(OptionInfo.Create).OrderBy(oi=>oi.Position);
         }
 
         /// <summary>
@@ -49,6 +49,7 @@ namespace Atrico.Lib.CommandLineParser
 
             public ParserT(IEnumerable<string> args)
             {
+                Validate<T>();
                 _result = new Lazy<T>(FitArguments);
                 // Find (writeable) properties with attribute
                 _options = GetOptionInformation<T>().ToArray();

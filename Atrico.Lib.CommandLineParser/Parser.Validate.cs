@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Atrico.Lib.CommandLineParser.Exceptions.Options;
 
 namespace Atrico.Lib.CommandLineParser
 {
@@ -23,6 +24,17 @@ namespace Atrico.Lib.CommandLineParser
         {
             var warnings = new List<string>();
             var options = GetOptionInformation<T>().ToArray();
+            // Duplicate position
+            OptionInfo last = null;
+            foreach (var opt in options)
+            {
+                if (last != null)
+                {
+                    if ( last.Position != -1 && last.Position == opt.Position) throw new DuplicatePositionsException(last.Property, opt.Property, last.Position);
+                }
+                last = opt;
+            }
+            // Warnings
             foreach (var option in options)
             {
                 warnings.AddRange(option.Warnings);

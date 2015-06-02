@@ -68,6 +68,15 @@ namespace Atrico.Lib.CommandLineParser.Test
                 public int Property { get; private set; }
             }
 
+            public class DuplicatePositions
+            {
+                [Option(Position = 0, Required = true)]
+                public int Property1 { get; private set; }
+
+                [Option(Position = 0, Required = true)]
+                public int Property2 { get; private set; }
+            }
+
             #endregion
 
             #region Warnings
@@ -145,6 +154,12 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestDefaultValueWrongType()
         {
             Implementation<Options.DefaultValueWrongType, DefaultValueWrongTypeException>();
+        }
+
+        [Test]
+        public void TestDuplicatePositions()
+        {
+            Implementation<Options.DuplicatePositions, DuplicatePositionsException>();
         }
 
         #endregion

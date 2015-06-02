@@ -9,6 +9,7 @@ namespace Atrico.Lib.CommandLineParser.Attributes
     public class OptionAttribute : Attribute
     {
         private object _defaultValue;
+        private int _position = -1;
 
         /// <summary>
         ///     Determines if option is mandatory
@@ -17,6 +18,18 @@ namespace Atrico.Lib.CommandLineParser.Attributes
         ///     <c>true</c> if required; otherwise, <c>false</c>.
         /// </value>
         public bool Required { get; set; }
+
+        /// <summary>
+        ///     Position to select parameter without switch
+        /// </summary>
+        /// <value>
+        ///     -1 if not set
+        /// </value>
+        public int Position
+        {
+            get { return _position; }
+            set { _position = value; }
+        }
 
         /// <summary>
         ///     Default value for optional option
