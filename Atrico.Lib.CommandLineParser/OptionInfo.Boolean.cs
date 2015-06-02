@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Atrico.Lib.CommandLineParser.Exceptions.Options;
 
 namespace Atrico.Lib.CommandLineParser
 {
@@ -9,6 +10,8 @@ namespace Atrico.Lib.CommandLineParser
             public OptionInfoBoolean(OptionDetails details)
                 : base(details)
             {
+                // Position not valid
+                if (Position != -1) throw new PositionOnBooleanException(Property, Position);
             }
 
             protected override bool GetOptionValue(Queue<string> args, out object value)

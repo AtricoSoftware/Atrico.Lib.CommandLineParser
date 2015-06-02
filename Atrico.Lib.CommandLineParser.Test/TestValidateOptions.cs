@@ -77,6 +77,12 @@ namespace Atrico.Lib.CommandLineParser.Test
                 public int Property2 { get; private set; }
             }
 
+            public class PositionOnBoolean
+            {
+                [Option(Position = 0)]
+                public bool Property { get; private set; }
+            }
+
             #endregion
 
             #region Warnings
@@ -160,6 +166,12 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestDuplicatePositions()
         {
             Implementation<Options.DuplicatePositions, DuplicatePositionsException>();
+        }
+
+       [Test]
+        public void TestPositionOnBoolean()
+        {
+            Implementation<Options.PositionOnBoolean, PositionOnBooleanException>();
         }
 
         #endregion

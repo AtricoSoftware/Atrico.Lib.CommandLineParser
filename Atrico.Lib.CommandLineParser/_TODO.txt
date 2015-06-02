@@ -14,6 +14,5 @@ VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
 	single command
 	ambiguous modes
-	positional boolean
 	positional mand following optional
 	warning - non contiguous positions?
