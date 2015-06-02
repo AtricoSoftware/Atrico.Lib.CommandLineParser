@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\OptionAttribute.cs" />
+    <Compile Include="Exceptions\Options\MandatoryPositionFollowsOptionalPositionException.cs" />
     <Compile Include="Exceptions\Options\PositionOnBooleanException.cs" />
     <Compile Include="Exceptions\Options\DuplicatePositionsException.cs" />
     <Compile Include="Exceptions\Options\DefaultValueWrongTypeException.cs" />

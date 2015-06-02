@@ -30,9 +30,19 @@ namespace Atrico.Lib.CommandLineParser
             {
                 if (last != null)
                 {
-                    if ( last.Position != -1 && last.Position == opt.Position) throw new DuplicatePositionsException(last.Property, opt.Property, last.Position);
+                    if (last.Position != -1 && last.Position == opt.Position) throw new DuplicatePositionsException(last.Property, opt.Property, last.Position);
                 }
                 last = opt;
+            }
+            // Mandatory positional following optional
+            var optionalPosition = false;
+            foreach (var opt in options)
+            {
+                if (optionalPosition && opt.Required)
+                {
+                    throw new MandatoryPositionFollowsOptionalPositionException(opt.Property);
+                }
+                if (opt.Position != -1 && !opt.Required) optionalPosition = true;
             }
             // Warnings
             foreach (var option in options)

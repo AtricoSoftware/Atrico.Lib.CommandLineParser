@@ -83,6 +83,15 @@ namespace Atrico.Lib.CommandLineParser.Test
                 public bool Property { get; private set; }
             }
 
+            public class MandatoryPositionFollowsOptionalPosition
+            {
+                [Option(Position = 0)]
+                public string Property1 { get; private set; }
+
+                [Option(Position = 1, Required = true)]
+                public string Property2 { get; private set; }
+            }
+
             #endregion
 
             #region Warnings
@@ -168,10 +177,15 @@ namespace Atrico.Lib.CommandLineParser.Test
             Implementation<Options.DuplicatePositions, DuplicatePositionsException>();
         }
 
-       [Test]
+        [Test]
         public void TestPositionOnBoolean()
         {
             Implementation<Options.PositionOnBoolean, PositionOnBooleanException>();
+        }
+        [Test]
+        public void TestMandatoryPositionFollowsOptionalPosition()
+        {
+            Implementation<Options.MandatoryPositionFollowsOptionalPosition, MandatoryPositionFollowsOptionalPositionException>();
         }
 
         #endregion

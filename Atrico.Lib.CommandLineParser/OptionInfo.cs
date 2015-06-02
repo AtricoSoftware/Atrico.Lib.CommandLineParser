@@ -69,7 +69,7 @@ namespace Atrico.Lib.CommandLineParser
 
             public int Position { get; private set; }
             public readonly PropertyInfo Property;
-            protected readonly bool Required;
+            public readonly bool Required;
             protected readonly bool HasDefaultValue;
             protected readonly object DefaultValue;
             protected readonly string Description;
