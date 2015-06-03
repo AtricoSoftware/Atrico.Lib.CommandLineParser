@@ -1,6 +1,6 @@
 ﻿IN PROGRESS
 ~~~~~~~~~~~
-positional
+positional - multiple
 
 TODO
 ~~~~
@@ -16,3 +16,8 @@ VALID OPTIONS CHECK
 	ambiguous modes
 	warning - non contiguous positions? / pos don't start at 0/1
 	no default ctor
+
+
+
+Create parser as instance (not static)
+Add options classes with callback or attributed function
