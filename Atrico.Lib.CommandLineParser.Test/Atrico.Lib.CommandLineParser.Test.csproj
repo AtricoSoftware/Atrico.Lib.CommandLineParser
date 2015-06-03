@@ -67,11 +67,11 @@
     <Compile Include="TestPositionalMandatoryNullable.cs" />
     <Compile Include="TestPositionalMandatoryPod.cs" />
     <Compile Include="TestPositionalMandatoryString.cs" />
-    <Compile Include="TODO\TestPositionalOptionalNullable.cs" />
-    <Compile Include="TODO\TestPositionalOptionalString.cs" />
-    <Compile Include="TODO\TestPositionalOptionalWithDefaultNullable.cs" />
-    <Compile Include="TODO\TestPositionalOptionalWithDefaultPod.cs" />
-    <Compile Include="TODO\TestPositionalOptionalWithDefaultString.cs" />
+    <Compile Include="TestPositionalOptionalNullable.cs" />
+    <Compile Include="TestPositionalOptionalString.cs" />
+    <Compile Include="TestPositionalOptionalWithDefaultNullable.cs" />
+    <Compile Include="TestPositionalOptionalWithDefaultPod.cs" />
+    <Compile Include="TestPositionalOptionalWithDefaultString.cs" />
     <Compile Include="TestUsageDescription.cs" />
     <Compile Include="TestUsageAppInfo.cs" />
     <Compile Include="TestOptionOptionalWithDefaultBoolean.cs" />
@@ -99,6 +99,9 @@
       <Project>{4ceff42e-f21e-4b30-a31a-cbfbf3fc7458}</Project>
       <Name>Atrico.Lib.CommandLineParser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TODO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

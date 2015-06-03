@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -10,28 +11,39 @@ using Atrico.Lib.Testing.NUnitAttributes;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-    [TestFixture]
-    public class TestPositionalOptionalWithDefaultString : CommandLineParserTestFixture<TestOptionOptionalString.Options>
+    [TestFixture(typeof (char))]
+    [TestFixture(typeof (byte))]
+    [TestFixture(typeof (sbyte))]
+    [TestFixture(typeof (short))]
+    [TestFixture(typeof (ushort))]
+    [TestFixture(typeof (int))]
+    [TestFixture(typeof (uint))]
+    [TestFixture(typeof (long))]
+    [TestFixture(typeof (ulong))]
+    [TestFixture(typeof (float))]
+    [TestFixture(typeof (double))]
+    public class TestPositionalOptionalWithDefaultNullable<T> : CommandLineParserTestFixture<TestOptionOptionalNullable<T>.Options> where T : struct
     {
         public class Options
         {
-            [Option(DefaultValue = "default")]
-            public string Text { get; private set; }
+            [Option(Position = 0, DefaultValue = 65)]
+            public T? Nullable { get; private set; }
         }
 
         [Test]
         public void TestPresent()
         {
-            const string theText = "Some Text";
+            RandomValues.DefaultCharsToInclude = RandomValueGenerator.CharsToInclude.AlphaNumeric;
+            var value = RandomValues.Value<T>();
             // Arrange
-            var args = CreateArgs(string.Format("-text '{0}'", theText));
+            var args = CreateArgs("{0}", value);
 
             // Act
             var options = Parser.Parse<Options>(args);
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Text).Is().EqualTo(theText), "Value is correct");
+            Assert.That(Value.Of(options.Nullable).Is().EqualTo(value), "Value is correct");
         }
 
         [Test]
@@ -45,20 +57,20 @@ namespace Atrico.Lib.CommandLineParser.Test
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Text).Is().EqualTo("default"), "Value is default");
+            Assert.That(Value.Of(options.Nullable).Is().EqualTo(Convert.ChangeType(65, typeof (T))), "Value is correct");
         }
 
         [Test]
-        public void TestMissingParameter()
+        public void TestParameterWrongType()
         {
             // Arrange
-            var args = CreateArgs("-text");
+            var args = CreateArgs("text");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionParameterException)), "Exception thrown");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (OptionParameterWrongTypeException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
 
@@ -71,7 +83,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             // Assert
             foreach (var line in usage) Debug.WriteLine(line);
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Text <{1}>]", ExeName, typeof (string).Name)), "Summary");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [[-Nullable] <{1}?>]", ExeName, typeof (T).Name)), "Summary");
         }
 
         [Test]
@@ -83,7 +95,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             // Assert
             foreach (var line in usage) Debug.WriteLine(line);
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of detail lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Text: (default = default)")), "Detail");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Nullable: (default = {0})", Convert.ChangeType(65, typeof (T)))), "Detail");
         }
     }
 }
