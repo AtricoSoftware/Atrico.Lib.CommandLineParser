@@ -32,7 +32,7 @@ namespace Atrico.Lib.CommandLineParser
                 }
                 catch (Exception ex)
                 {
-                    throw new OptionParameterWrongTypeException(Name, typeof (T), valueStr, ex);
+                    throw new ParameterWrongTypeException(Name, typeof (T), valueStr, ex);
                 }
             }
         }

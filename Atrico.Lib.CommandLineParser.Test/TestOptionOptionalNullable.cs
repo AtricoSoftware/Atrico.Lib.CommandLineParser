@@ -69,7 +69,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionParameterException)), "Exception thrown");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingParameterException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
 
@@ -83,7 +83,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof (OptionParameterWrongTypeException)), "Exception thrown");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (ParameterWrongTypeException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
 

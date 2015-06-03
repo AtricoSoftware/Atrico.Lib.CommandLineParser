@@ -202,7 +202,7 @@ namespace Atrico.Lib.CommandLineParser
 
                 if (Fulfilled && !_hasValue)
                 {
-                    throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, Name), Property.PropertyType);
+                    throw new MissingParameterException(string.Format("{0}{1}", _switch, Name), Property.PropertyType);
                 }
 
                 Property.SetValue(options, (!Fulfilled && HasDefaultValue) ? DefaultValue : _value);

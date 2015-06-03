@@ -55,8 +55,8 @@
     <Compile Include="Exceptions\InvalidOptionsPropertyException.cs" />
     <Compile Include="Exceptions\CommandLineParserException.cs" />
     <Compile Include="Exceptions\Parse\MissingOptionException.cs" />
-    <Compile Include="Exceptions\Parse\MissingOptionParameterException.cs" />
-    <Compile Include="Exceptions\Parse\OptionParameterWrongTypeException.cs" />
+    <Compile Include="Exceptions\Parse\MissingParameterException.cs" />
+    <Compile Include="Exceptions\Parse\ParameterWrongTypeException.cs" />
     <Compile Include="Exceptions\Options\UnSupportedTypeException.cs" />
     <Compile Include="Exceptions\Parse\UnexpectedOptionException.cs" />
     <Compile Include="OptionInfo.Pod.cs" />
