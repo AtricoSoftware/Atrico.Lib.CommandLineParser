@@ -85,7 +85,10 @@ namespace Atrico.Lib.CommandLineParser
 
             private T FitArguments()
             {
-                var leftOver = _options.Aggregate(_args, (current, opt) => opt.FulFill(current));
+                // Options
+                var leftOverArgs = _options.Aggregate(_args, (current, opt) => opt.FulFillSwitches(current));
+                // Positional
+                leftOverArgs = _options.Aggregate(leftOverArgs, (current, opt) => opt.FulFillPositional(current));
                 var results = new T();
                 _options.ForEach(option => option.Populate(results));
                 return results;

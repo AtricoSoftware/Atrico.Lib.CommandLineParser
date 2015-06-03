@@ -64,6 +64,14 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="TestPositionalMandatoryNullable.cs" />
+    <Compile Include="TestPositionalMandatoryPod.cs" />
+    <Compile Include="TestPositionalMandatoryString.cs" />
+    <Compile Include="TODO\TestPositionalOptionalNullable.cs" />
+    <Compile Include="TODO\TestPositionalOptionalString.cs" />
+    <Compile Include="TODO\TestPositionalOptionalWithDefaultNullable.cs" />
+    <Compile Include="TODO\TestPositionalOptionalWithDefaultPod.cs" />
+    <Compile Include="TODO\TestPositionalOptionalWithDefaultString.cs" />
     <Compile Include="TestUsageDescription.cs" />
     <Compile Include="TestUsageAppInfo.cs" />
     <Compile Include="TestOptionOptionalWithDefaultBoolean.cs" />

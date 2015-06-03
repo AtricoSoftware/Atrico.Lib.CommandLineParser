@@ -17,11 +17,31 @@ namespace Atrico.Lib.CommandLineParser
             private readonly OptionAttribute _attribute;
 
             public PropertyInfo Property { get; private set; }
-            public bool Required { get { return _attribute.Required; } }
-            public bool HasDefaultValue { get { return _attribute.HasDefaultValue; } }
-            public object DefaultValue { get { return _attribute.DefaultValue; } }
-            public string Description { get { return _attribute.Description; } }
-            public int Position {get { return _attribute.Position; }}
+
+            public bool Required
+            {
+                get { return _attribute.Required; }
+            }
+
+            public bool HasDefaultValue
+            {
+                get { return _attribute.HasDefaultValue; }
+            }
+
+            public object DefaultValue
+            {
+                get { return _attribute.DefaultValue; }
+            }
+
+            public string Description
+            {
+                get { return _attribute.Description; }
+            }
+
+            public int Position
+            {
+                get { return _attribute.Position; }
+            }
 
             public OptionDetails(PropertyInfo property, OptionAttribute attribute)
             {
@@ -68,12 +88,13 @@ namespace Atrico.Lib.CommandLineParser
             };
 
             public int Position { get; private set; }
+            public bool Fulfilled { get; private set; }
             public readonly PropertyInfo Property;
             public readonly bool Required;
+
             protected readonly bool HasDefaultValue;
             protected readonly object DefaultValue;
             protected readonly string Description;
-            private bool _fulfilled;
             private bool _hasValue;
             private object _value;
             private readonly Lazy<IEnumerable<string>> _warnings;
@@ -138,9 +159,9 @@ namespace Atrico.Lib.CommandLineParser
                 return warnings;
             }
 
-            public IEnumerable<string> FulFill(IEnumerable<string> argsIn)
+            public IEnumerable<string> FulFillSwitches(IEnumerable<string> argsIn)
             {
-                if (_fulfilled)
+                if (Fulfilled)
                 {
                     return argsIn;
                 }
@@ -151,28 +172,40 @@ namespace Atrico.Lib.CommandLineParser
                 {
                     return argsOut;
                 }
-                _fulfilled = true;
+                Fulfilled = true;
                 // Remove matched option
                 var argsQueue = new Queue<string>(argsRemaining.Skip(1));
                 _hasValue = GetOptionValue(argsQueue, out _value);
                 return argsOut.Concat(argsQueue);
             }
 
+            public IEnumerable<string> FulFillPositional(IEnumerable<string> argsIn)
+            {
+                if (Fulfilled || Position == -1)
+                {
+                    return argsIn;
+                }
+                // Remove matched option
+                var argsQueue = new Queue<string>(argsIn);
+                Fulfilled = _hasValue = GetOptionValue(argsQueue, out _value);
+                return argsQueue;
+            }
+
             protected abstract bool GetOptionValue(Queue<string> args, out object value);
 
             public void Populate(object options)
             {
-                if (Required && !_fulfilled)
+                if (Required && !Fulfilled)
                 {
                     throw new MissingOptionException(string.Format("{0}{1}", _switch, Name));
                 }
 
-                if (_fulfilled && !_hasValue)
+                if (Fulfilled && !_hasValue)
                 {
                     throw new MissingOptionParameterException(string.Format("{0}{1}", _switch, Name), Property.PropertyType);
                 }
 
-                Property.SetValue(options, (!_fulfilled && HasDefaultValue) ? DefaultValue : _value);
+                Property.SetValue(options, (!Fulfilled && HasDefaultValue) ? DefaultValue : _value);
             }
 
             public override string ToString()
@@ -186,6 +219,12 @@ namespace Atrico.Lib.CommandLineParser
                 {
                     // Name
                     var summary = new StringBuilder(UsageName);
+                    // Positional?
+                    if (Position != -1)
+                    {
+                        summary.Insert(0, '[');
+                        summary.Append(']');
+                    }
                     // Parameter
                     if (!String.IsNullOrWhiteSpace(UsageType))
                     {

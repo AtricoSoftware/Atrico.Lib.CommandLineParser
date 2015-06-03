@@ -14,4 +14,5 @@ VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
 	single command
 	ambiguous modes
-	warning - non contiguous positions?
+	warning - non contiguous positions? / pos don't start at 0/1
+	no default ctor
