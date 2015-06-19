@@ -6,7 +6,7 @@ using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.Testing;
-using Atrico.Lib.Testing.NUnitAttributes;
+using Atrico.Lib.Testing.TestAttributes.NUnit;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
@@ -124,7 +124,10 @@ namespace Atrico.Lib.CommandLineParser.Test
 
             // Assert 
             Assert.That(Value.Of(ex).Is().Null(), "No Errors");
-            if (!_allowWarnings) Assert.That(Value.Of(warnings).Is().EqualTo(new String[] {}), "No Warnings");
+            if (!_allowWarnings)
+            {
+                Assert.That(Value.Of(warnings).Is().EqualTo(new String[] {}), "No Warnings");
+            }
         }
     }
 }

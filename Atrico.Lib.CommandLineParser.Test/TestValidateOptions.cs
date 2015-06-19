@@ -7,7 +7,7 @@ using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.CommandLineParser.Exceptions.Options;
 using Atrico.Lib.Testing;
-using Atrico.Lib.Testing.NUnitAttributes;
+using Atrico.Lib.Testing.TestAttributes.NUnit;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
@@ -182,6 +182,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         {
             Implementation<Options.PositionOnBoolean, PositionOnBooleanException>();
         }
+
         [Test]
         public void TestMandatoryPositionFollowsOptionalPosition()
         {
@@ -246,7 +247,10 @@ namespace Atrico.Lib.CommandLineParser.Test
             if (hasWarnings)
             {
                 Assert.That(Value.Of(warnings).Count().Is().GreaterThan(0), "Warnings");
-                foreach (var warning in warnings) Debug.WriteLine(string.Format("WARNING: {0}", warning));
+                foreach (var warning in warnings)
+                {
+                    Debug.WriteLine(string.Format("WARNING: {0}", warning));
+                }
             }
             else
             {

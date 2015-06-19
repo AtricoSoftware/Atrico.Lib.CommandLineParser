@@ -4,7 +4,7 @@ using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
-using Atrico.Lib.Testing.NUnitAttributes;
+using Atrico.Lib.Testing.TestAttributes.NUnit;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
@@ -41,7 +41,10 @@ namespace Atrico.Lib.CommandLineParser.Test
             var usage = Parser.GetUsage<OptionsNoDefault>(Parser.UsageDetails.ParameterDetails).ToArray();
 
             // Assert
-            foreach (var line in usage) Debug.WriteLine(line);
+            foreach (var line in usage)
+            {
+                Debug.WriteLine(line);
+            }
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of lines");
             Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Boolean: {0}", _description, "Description")));
         }
@@ -53,7 +56,10 @@ namespace Atrico.Lib.CommandLineParser.Test
             var usage = Parser.GetUsage<OptionsWithDefault>(Parser.UsageDetails.ParameterDetails).ToArray();
 
             // Assert
-            foreach (var line in usage) Debug.WriteLine(line);
+            foreach (var line in usage)
+            {
+                Debug.WriteLine(line);
+            }
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of lines");
             Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Boolean: {0} (default = True)", _description, "Description and default")));
         }
@@ -65,7 +71,10 @@ namespace Atrico.Lib.CommandLineParser.Test
             var usage = Parser.GetUsage<OptionsMultiplePropreties>(Parser.UsageDetails.ParameterDetails).ToArray();
 
             // Assert
-            foreach (var line in usage) Debug.WriteLine(line);
+            foreach (var line in usage)
+            {
+                Debug.WriteLine(line);
+            }
             Assert.That(Value.Of(usage).Count().Is().EqualTo(2), "Number of lines");
             Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Short:      {0}", _description, "Short")));
             Assert.That(Value.Of(usage[1]).Is().EqualTo(string.Format("MuchLonger: {0}", _description, "Longer")));

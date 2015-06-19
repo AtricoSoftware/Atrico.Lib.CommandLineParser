@@ -10,7 +10,7 @@ namespace Atrico.Lib.CommandLineParser.Exceptions.Parse
     public class AmbiguousOptionException : ParseException
     {
         public AmbiguousOptionException(string option, IEnumerable<string> possibilites)
-            : base(string.Format("An option was ambiguous: {0} {1}", option, possibilites.ToCollectionString("()")))
+            : base(string.Format("An option was ambiguous: {0} {1}", option, possibilites.ToCollectionString("(", ")")))
         {
         }
     }

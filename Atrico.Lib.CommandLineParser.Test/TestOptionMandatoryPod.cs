@@ -6,7 +6,7 @@ using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.CommandLineParser.Exceptions.Parse;
 using Atrico.Lib.Testing;
-using Atrico.Lib.Testing.NUnitAttributes;
+using Atrico.Lib.Testing.TestAttributes.NUnit;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
@@ -93,7 +93,10 @@ namespace Atrico.Lib.CommandLineParser.Test
             var usage = Parser.GetUsage<Options>(Parser.UsageDetails.Summary).ToArray();
 
             // Assert
-            foreach (var line in usage) Debug.WriteLine(line);
+            foreach (var line in usage)
+            {
+                Debug.WriteLine(line);
+            }
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
             Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} -Pod <{1}>", ExeName, typeof (T).Name)), "Summary");
         }
