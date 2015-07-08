@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -22,11 +21,11 @@ namespace Atrico.Lib.CommandLineParser.Test
     [TestFixture(typeof (ulong))]
     [TestFixture(typeof (float))]
     [TestFixture(typeof (double))]
-    public class TestOptionOptionalWithDefaultNullable<T> : CommandLineParserTestFixture<TestOptionOptionalNullable<T>.Options> where T : struct
+    public class TestOptionOptionalPodNullable<T> : CommandLineParserTestFixture<TestOptionOptionalPodNullable<T>.Options> where T : struct
     {
         public class Options
         {
-            [Option(DefaultValue = 65)]
+            [Option]
             public T? Nullable { get; private set; }
         }
 
@@ -57,7 +56,7 @@ namespace Atrico.Lib.CommandLineParser.Test
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Nullable).Is().EqualTo(Convert.ChangeType(65, typeof (T))), "Value is correct");
+            Assert.That(Value.Of(options.Nullable.HasValue).Is().False(), "Value is null");
         }
 
         [Test]
@@ -101,21 +100,6 @@ namespace Atrico.Lib.CommandLineParser.Test
             }
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
             Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Nullable <{1}?>]", ExeName, typeof (T).Name)), "Summary");
-        }
-
-        [Test]
-        public void TestUsageParameterDetails()
-        {
-            // Act
-            var usage = Parser.GetUsage<Options>(Parser.UsageDetails.ParameterDetails).ToArray();
-
-            // Assert
-            foreach (var line in usage)
-            {
-                Debug.WriteLine(line);
-            }
-            Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of detail lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Nullable: (default = {0})", Convert.ChangeType(65, typeof (T)))), "Detail");
         }
     }
 }

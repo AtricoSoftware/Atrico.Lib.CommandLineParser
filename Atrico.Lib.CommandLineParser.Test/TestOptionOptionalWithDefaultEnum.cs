@@ -11,39 +11,31 @@ using Atrico.Lib.Testing.TestAttributes.NUnit;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-    [TestFixture(typeof (char))]
-    [TestFixture(typeof (byte))]
-    [TestFixture(typeof (sbyte))]
-    [TestFixture(typeof (short))]
-    [TestFixture(typeof (ushort))]
-    [TestFixture(typeof (int))]
-    [TestFixture(typeof (uint))]
-    [TestFixture(typeof (long))]
-    [TestFixture(typeof (ulong))]
-    [TestFixture(typeof (float))]
-    [TestFixture(typeof (double))]
-    public class TestOptionOptionalWithDefaultPod<T> : CommandLineParserTestFixture<TestOptionOptionalWithDefaultPod<T>.Options> where T : struct
+    public class TestOptionOptionalWithDefaultEnum : CommandLineParserTestFixture<TestOptionOptionalWithDefaultEnum.Options>
     {
+        public enum OptionEnum
+        {
+            Zero, One, Two, Three
+        }
         public class Options
         {
-            [Option(DefaultValue = 65)]
-            public T Pod { get; private set; }
+            [Option(DefaultValue = OptionEnum.Two)]
+            public OptionEnum Opt { get; private set; }
         }
 
         [Test]
         public void TestPresent()
         {
-            RandomValues.DefaultCharsToInclude = RandomValueGenerator.CharsToInclude.AlphaNumeric;
-            var value = RandomValues.Value<T>();
+            const OptionEnum value = OptionEnum.One;
             // Arrange
-            var args = CreateArgs("-pod {0}", value);
+            var args = CreateArgs("-opt {0}", value);
 
             // Act
             var options = Parser.Parse<Options>(args);
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Pod).Is().EqualTo(value), "Value is correct");
+            Assert.That(Value.Of(options.Opt).Is().EqualTo(value), "Value is correct");
         }
 
         [Test]
@@ -57,17 +49,21 @@ namespace Atrico.Lib.CommandLineParser.Test
 
             // Assert
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Pod).Is().EqualTo(Convert.ChangeType(65, typeof (T))), "Value is correct");
+            Assert.That(Value.Of(options.Opt).Is().EqualTo(OptionEnum.Two), "Value is correct");
         }
 
         [Test]
         public void TestMissingParameter()
         {
             // Arrange
-            var args = CreateArgs("-pod");
+            var args = CreateArgs("-opt");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
+
+            // Assert
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof(MissingParameterException)), "Exception thrown");
+            Debug.WriteLine(ex.Message);
 
             // Assert
             Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingParameterException)), "Exception thrown");
@@ -78,7 +74,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         public void TestParameterWrongType()
         {
             // Arrange
-            var args = CreateArgs("-pod text");
+            var args = CreateArgs("-opt text");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
@@ -100,7 +96,7 @@ namespace Atrico.Lib.CommandLineParser.Test
                 Debug.WriteLine(line);
             }
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Pod <{1}>]", ExeName, typeof (T).Name)), "Summary");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Opt <{1}>]", ExeName, typeof(OptionEnum).Name)), "Summary");
         }
 
         [Test]
@@ -115,7 +111,7 @@ namespace Atrico.Lib.CommandLineParser.Test
                 Debug.WriteLine(line);
             }
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of detail lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Pod: (default = {0})", Convert.ChangeType(65, typeof (T)))), "Detail");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Opt: (default = {0})", "Two")), "Detail");
         }
     }
 }

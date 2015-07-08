@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Linq;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -11,7 +11,7 @@ using Atrico.Lib.Testing.TestAttributes.NUnit;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestOptionMandatoryEnum : CommandLineParserTestFixture<TestOptionMandatoryEnum.Options>
+    public class TestOptionMandatoryEnumNullable : CommandLineParserTestFixture<TestOptionMandatoryEnumNullable.Options>
     {
         public enum OptionEnum
         {
@@ -24,7 +24,12 @@ namespace Atrico.Lib.CommandLineParser.Test
         public class Options
         {
             [Option(Required = true)]
-            public OptionEnum Opt { get; private set; }
+            public OptionEnum? Opt { get; private set; }
+        }
+
+        public TestOptionMandatoryEnumNullable()
+            : base(true)
+        {
         }
 
         [Test]
@@ -81,7 +86,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             // Assert
             foreach (var line in usage) Debug.WriteLine(line);
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} -Opt <{1}>", ExeName, typeof (OptionEnum).Name)), "Summary");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} -Opt <{1}?>", ExeName, typeof (OptionEnum).Name)), "Summary");
         }
     }
 }

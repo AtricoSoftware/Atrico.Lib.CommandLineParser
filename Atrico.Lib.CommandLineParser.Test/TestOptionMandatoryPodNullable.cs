@@ -21,7 +21,7 @@ namespace Atrico.Lib.CommandLineParser.Test
     [TestFixture(typeof (ulong))]
     [TestFixture(typeof (float))]
     [TestFixture(typeof (double))]
-    public class TestOptionMandatoryNullable<T> : CommandLineParserTestFixture<TestOptionMandatoryNullable<T>.Options> where T : struct
+    public class TestOptionMandatoryPodNullable<T> : CommandLineParserTestFixture<TestOptionMandatoryPodNullable<T>.Options> where T : struct
     {
         public class Options
         {
@@ -29,7 +29,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             public T? Nullable { get; private set; }
         }
 
-        public TestOptionMandatoryNullable()
+        public TestOptionMandatoryPodNullable()
             : base(true)
         {
         }

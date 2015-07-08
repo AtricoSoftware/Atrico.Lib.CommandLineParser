@@ -60,7 +60,8 @@
     <Compile Include="Exceptions\Options\UnSupportedTypeException.cs" />
     <Compile Include="Exceptions\Parse\UnexpectedOptionException.cs" />
     <Compile Include="OptionInfo.Pod.cs" />
-    <Compile Include="OptionInfo.Nullable.cs" />
+    <Compile Include="OptionInfo.EnumNullable.cs" />
+    <Compile Include="OptionInfo.PodNullable.cs" />
     <Compile Include="OptionInfo.Enum.cs" />
     <Compile Include="OptionInfo.String.cs" />
     <Compile Include="OptionInfo.Boolean.cs" />

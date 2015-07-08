@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -22,12 +21,17 @@ namespace Atrico.Lib.CommandLineParser.Test
     [TestFixture(typeof (ulong))]
     [TestFixture(typeof (float))]
     [TestFixture(typeof (double))]
-    public class TestPositionalOptionalWithDefaultNullable<T> : CommandLineParserTestFixture<TestOptionOptionalNullable<T>.Options> where T : struct
+    public class TestPositionalMandatoryPodNullable<T> : CommandLineParserTestFixture<TestOptionMandatoryPodNullable<T>.Options> where T : struct
     {
         public class Options
         {
-            [Option(Position = 0, DefaultValue = 65)]
+            [Option(Position = 0, Required = true)]
             public T? Nullable { get; private set; }
+        }
+
+        public TestPositionalMandatoryPodNullable()
+            : base(true)
+        {
         }
 
         [Test]
@@ -53,11 +57,11 @@ namespace Atrico.Lib.CommandLineParser.Test
             var args = CreateArgs("");
 
             // Act
-            var options = Parser.Parse<Options>(args);
+            var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Nullable).Is().EqualTo(Convert.ChangeType(65, typeof (T))), "Value is correct");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionException)), "Exception thrown");
+            Debug.WriteLine(ex.Message);
         }
 
         [Test]
@@ -86,22 +90,7 @@ namespace Atrico.Lib.CommandLineParser.Test
                 Debug.WriteLine(line);
             }
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [[-Nullable] <{1}?>]", ExeName, typeof (T).Name)), "Summary");
-        }
-
-        [Test]
-        public void TestUsageParameterDetails()
-        {
-            // Act
-            var usage = Parser.GetUsage<Options>(Parser.UsageDetails.ParameterDetails).ToArray();
-
-            // Assert
-            foreach (var line in usage)
-            {
-                Debug.WriteLine(line);
-            }
-            Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of detail lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("Nullable: (default = {0})", Convert.ChangeType(65, typeof (T)))), "Detail");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Nullable] <{1}?>", ExeName, typeof (T).Name)), "Summary");
         }
     }
 }

@@ -222,14 +222,16 @@ namespace Atrico.Lib.CommandLineParser
                 if (propertyType == typeof (string)) return d => new OptionInfoString(d);
                 // POD types
                 if (propertyType.IsPrimitive) return d => new OptionInfoPod(d, propertyType);
-                // Enums
+                // Enum
                 if (propertyType.IsEnum()) return d => new OptionInfoEnum(d, propertyType);
                 // Nullable...
                 Type underlyingType;
                 if (propertyType.IsNullable(out underlyingType))
                 {
                     // Nullable POD types
-                    if (underlyingType.IsPrimitive) return d => new OptionInfoNullable(d, underlyingType);
+                    if (underlyingType.IsPrimitive) return d => new OptionInfoPodNullable(d, underlyingType);
+                    // Nullable Enum
+                    if (underlyingType.IsEnum()) return d => new OptionInfoEnumNullable(d, underlyingType);
                 }
                 // Unsupported type
                 return null;

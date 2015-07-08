@@ -21,7 +21,7 @@ namespace Atrico.Lib.CommandLineParser.Test
     [TestFixture(typeof (ulong))]
     [TestFixture(typeof (float))]
     [TestFixture(typeof (double))]
-    public class TestPositionalOptionalNullable<T> : CommandLineParserTestFixture<TestOptionOptionalNullable<T>.Options> where T : struct
+    public class TestPositionalOptionalPodNullable<T> : CommandLineParserTestFixture<TestOptionOptionalPodNullable<T>.Options> where T : struct
     {
         public class Options
         {
