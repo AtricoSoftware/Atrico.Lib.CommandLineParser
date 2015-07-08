@@ -8,7 +8,7 @@ namespace Atrico.Lib.CommandLineParser
         private class OptionInfoBoolean : OptionInfoSwitch
         {
             public OptionInfoBoolean(OptionDetails details)
-                : base(details)
+                : base(details, typeof(bool))
             {
                 // Position not valid
                 if (Position != -1) throw new PositionOnBooleanException(Property, Position);

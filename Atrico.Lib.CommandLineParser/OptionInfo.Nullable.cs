@@ -7,10 +7,10 @@ namespace Atrico.Lib.CommandLineParser
 {
     public static partial class Parser
     {
-        private class OptionInfoNullable<T> : OptionInfoParameterisedSwitch where T : struct
+        private class OptionInfoNullable : OptionInfoParameterisedSwitch
         {
-            public OptionInfoNullable(OptionDetails details)
-                : base(details)
+            public OptionInfoNullable(OptionDetails details, Type type)
+                : base(details, type)
             {
             }
 
@@ -24,18 +24,18 @@ namespace Atrico.Lib.CommandLineParser
                 var valueStr = args.Dequeue();
                 try
                 {
-                    value = (T) Convert.ChangeType(valueStr, typeof (T));
+                    value = Convert.ChangeType(valueStr, Type);
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    throw new ParameterWrongTypeException(Name, typeof (T), valueStr, ex);
+                    throw new ParameterWrongTypeException(Name, Type, valueStr, ex);
                 }
             }
 
             protected override object ChangeValueType(object obj)
             {
-                return Convert.ChangeType(obj, typeof (T));
+                return Convert.ChangeType(obj, Type);
             }
 
             protected override IEnumerable<string> CalculateWarnings()
@@ -50,7 +50,7 @@ namespace Atrico.Lib.CommandLineParser
 
             protected override string UsageType
             {
-                get { return string.Format("{0}?", typeof (T).Name); }
+                get { return string.Format("{0}?", Type.Name); }
             }
         }
     }

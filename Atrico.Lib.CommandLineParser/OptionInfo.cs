@@ -7,6 +7,7 @@ using System.Text;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.CommandLineParser.Exceptions.Options;
 using Atrico.Lib.CommandLineParser.Exceptions.Parse;
+using Atrico.Lib.Common.Reflection;
 
 namespace Atrico.Lib.CommandLineParser
 {
@@ -53,39 +54,9 @@ namespace Atrico.Lib.CommandLineParser
         [DebuggerDisplay("Option: {_name}: {_fulfilled}")]
         internal abstract class OptionInfo
         {
-            private delegate OptionInfo OptionCreator(OptionDetails details);
+            protected Type Type { get; private set; }
 
-            private static readonly IDictionary<Type, OptionCreator> _supportedTypes = new Dictionary<Type, OptionCreator>
-            {
-                // Boolean option
-                {typeof (bool), d => new OptionInfoBoolean(d)},
-                // String
-                {typeof (string), d => new OptionInfoString(d)},
-                // POD types
-                {typeof (char), d => new OptionInfoPod<char>(d)},
-                {typeof (byte), d => new OptionInfoPod<byte>(d)},
-                {typeof (sbyte), d => new OptionInfoPod<sbyte>(d)},
-                {typeof (short), d => new OptionInfoPod<short>(d)},
-                {typeof (ushort), d => new OptionInfoPod<ushort>(d)},
-                {typeof (int), d => new OptionInfoPod<int>(d)},
-                {typeof (uint), d => new OptionInfoPod<uint>(d)},
-                {typeof (long), d => new OptionInfoPod<long>(d)},
-                {typeof (ulong), d => new OptionInfoPod<ulong>(d)},
-                {typeof (float), d => new OptionInfoPod<float>(d)},
-                {typeof (double), d => new OptionInfoPod<double>(d)},
-                // Nullable POD types
-                {typeof (char?), d => new OptionInfoNullable<char>(d)},
-                {typeof (byte?), d => new OptionInfoNullable<byte>(d)},
-                {typeof (sbyte?), d => new OptionInfoNullable<sbyte>(d)},
-                {typeof (short?), d => new OptionInfoNullable<short>(d)},
-                {typeof (ushort?), d => new OptionInfoNullable<ushort>(d)},
-                {typeof (int?), d => new OptionInfoNullable<int>(d)},
-                {typeof (uint?), d => new OptionInfoNullable<uint>(d)},
-                {typeof (long?), d => new OptionInfoNullable<long>(d)},
-                {typeof (ulong?), d => new OptionInfoNullable<ulong>(d)},
-                {typeof (float?), d => new OptionInfoNullable<float>(d)},
-                {typeof (double?), d => new OptionInfoNullable<double>(d)},
-            };
+            private delegate OptionInfo OptionCreator(OptionDetails details);
 
             public int Position { get; private set; }
             public bool Fulfilled { get; private set; }
@@ -116,16 +87,17 @@ namespace Atrico.Lib.CommandLineParser
                 // Check for setter
                 if (property.SetMethod == null) throw new NoSetterException(property);
                 // Supported types
-                OptionCreator creator;
-                if (!_supportedTypes.TryGetValue(property.PropertyType, out creator)) throw new UnSupportedTypeException(property);
+                var creator = GetOptionCreator(property.PropertyType);
+                if (creator == null) throw new UnSupportedTypeException(property);
 
                 // Create option
                 var details = new OptionDetails(property, attribute);
                 return creator(details);
             }
 
-            protected OptionInfo(OptionDetails details)
+            protected OptionInfo(OptionDetails details, Type type)
             {
+                Type = type;
                 Property = details.Property;
                 Required = details.Required;
                 HasDefaultValue = details.HasDefaultValue;
@@ -161,17 +133,11 @@ namespace Atrico.Lib.CommandLineParser
 
             public IEnumerable<string> FulFillSwitches(IEnumerable<string> argsIn)
             {
-                if (Fulfilled)
-                {
-                    return argsIn;
-                }
+                if (Fulfilled) return argsIn;
                 var argsArray = argsIn.ToArray();
                 var argsOut = argsArray.TakeWhile(item => !string.Equals(Name, RemoveSwitch(item), StringComparison.OrdinalIgnoreCase));
                 var argsRemaining = argsArray.SkipWhile(item => !string.Equals(Name, RemoveSwitch(item), StringComparison.OrdinalIgnoreCase)).ToArray();
-                if (!argsRemaining.Any())
-                {
-                    return argsOut;
-                }
+                if (!argsRemaining.Any()) return argsOut;
                 Fulfilled = true;
                 // Remove matched option
                 var argsQueue = new Queue<string>(argsRemaining.Skip(1));
@@ -181,10 +147,7 @@ namespace Atrico.Lib.CommandLineParser
 
             public IEnumerable<string> FulFillPositional(IEnumerable<string> argsIn)
             {
-                if (Fulfilled || Position == -1)
-                {
-                    return argsIn;
-                }
+                if (Fulfilled || Position == -1) return argsIn;
                 // Remove matched option
                 var argsQueue = new Queue<string>(argsIn);
                 Fulfilled = _hasValue = GetOptionValue(argsQueue, out _value);
@@ -195,15 +158,9 @@ namespace Atrico.Lib.CommandLineParser
 
             public void Populate(object options)
             {
-                if (Required && !Fulfilled)
-                {
-                    throw new MissingOptionException(string.Format("{0}{1}", _switch, Name));
-                }
+                if (Required && !Fulfilled) throw new MissingOptionException(string.Format("{0}{1}", _switch, Name));
 
-                if (Fulfilled && !_hasValue)
-                {
-                    throw new MissingParameterException(string.Format("{0}{1}", _switch, Name), Property.PropertyType);
-                }
+                if (Fulfilled && !_hasValue) throw new MissingParameterException(string.Format("{0}{1}", _switch, Name), Property.PropertyType);
 
                 Property.SetValue(options, (!Fulfilled && HasDefaultValue) ? DefaultValue : _value);
             }
@@ -226,10 +183,7 @@ namespace Atrico.Lib.CommandLineParser
                         summary.Append(']');
                     }
                     // Parameter
-                    if (!String.IsNullOrWhiteSpace(UsageType))
-                    {
-                        summary.AppendFormat(" <{0}>", UsageType);
-                    }
+                    if (!String.IsNullOrWhiteSpace(UsageType)) summary.AppendFormat(" <{0}>", UsageType);
                     // Optional?
                     if (!Required)
                     {
@@ -246,10 +200,7 @@ namespace Atrico.Lib.CommandLineParser
                 {
                     var detail = new StringBuilder();
                     // Descritpion
-                    if (Description != null)
-                    {
-                        detail.Append(Description);
-                    }
+                    if (Description != null) detail.Append(Description);
                     // Default value
                     if (HasDefaultValue)
                     {
@@ -262,12 +213,33 @@ namespace Atrico.Lib.CommandLineParser
 
             protected abstract string UsageName { get; }
             protected abstract string UsageType { get; }
-        };
+
+            private static OptionCreator GetOptionCreator(Type propertyType)
+            {
+                // Boolean option
+                if (propertyType == typeof (bool)) return d => new OptionInfoBoolean(d);
+                // String
+                if (propertyType == typeof (string)) return d => new OptionInfoString(d);
+                // POD types
+                if (propertyType.IsPrimitive) return d => new OptionInfoPod(d, propertyType);
+                // Enums
+                if (propertyType.IsEnum()) return d => new OptionInfoEnum(d, propertyType);
+                // Nullable...
+                Type underlyingType;
+                if (propertyType.IsNullable(out underlyingType))
+                {
+                    // Nullable POD types
+                    if (underlyingType.IsPrimitive) return d => new OptionInfoNullable(d, underlyingType);
+                }
+                // Unsupported type
+                return null;
+            }
+        }
 
         internal abstract class OptionInfoSwitch : OptionInfo
         {
-            protected OptionInfoSwitch(OptionDetails details)
-                : base(details)
+            protected OptionInfoSwitch(OptionDetails details, Type type)
+                : base(details, type)
             {
             }
 
@@ -279,7 +251,8 @@ namespace Atrico.Lib.CommandLineParser
 
         internal abstract class OptionInfoParameterisedSwitch : OptionInfoSwitch
         {
-            protected OptionInfoParameterisedSwitch(OptionDetails details) : base(details)
+            protected OptionInfoParameterisedSwitch(OptionDetails details, Type type)
+                : base(details, type)
             {
             }
 

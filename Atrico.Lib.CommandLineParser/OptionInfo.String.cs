@@ -8,7 +8,7 @@ namespace Atrico.Lib.CommandLineParser
         private class OptionInfoString : OptionInfoParameterisedSwitch
         {
             public OptionInfoString(OptionDetails details)
-                : base(details)
+                : base(details, typeof(string))
             {
             }
 

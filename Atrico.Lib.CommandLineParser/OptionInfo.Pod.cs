@@ -8,10 +8,11 @@ namespace Atrico.Lib.CommandLineParser
 {
     public static partial class Parser
     {
-        private class OptionInfoPod<T> : OptionInfoParameterisedSwitch where T : struct
+        private class OptionInfoPod : OptionInfoParameterisedSwitch
         {
-            public OptionInfoPod(OptionDetails details)
-                : base(details)
+
+            public OptionInfoPod(OptionDetails details, Type type)
+                : base(details, type)
             {
                 // Check for optional/default value
                 if (!details.Required && !details.HasDefaultValue) throw new OptionalNonNullableException(details.Property);
@@ -27,12 +28,12 @@ namespace Atrico.Lib.CommandLineParser
                 var valueStr = args.Dequeue();
                 try
                 {
-                    value = (T) Convert.ChangeType(valueStr, typeof (T));
+                    value = Convert.ChangeType(valueStr, Type);
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    throw new ParameterWrongTypeException(Name, typeof (T), valueStr, ex);
+                    throw new ParameterWrongTypeException(Name, Type, valueStr, ex);
                 }
             }
         }

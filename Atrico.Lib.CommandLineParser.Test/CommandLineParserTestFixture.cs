@@ -45,10 +45,7 @@ namespace Atrico.Lib.CommandLineParser.Test
                 {
                     case State.OutsideToken:
                     {
-                        if (ch == '\'')
-                        {
-                            state = State.InsideString;
-                        }
+                        if (ch == '\'') state = State.InsideString;
                         else if (Char.IsWhiteSpace(ch))
                         {
                             // Ignore!
@@ -63,20 +60,14 @@ namespace Atrico.Lib.CommandLineParser.Test
                     }
                     case State.InsideToken:
                     {
-                        if (ch == '\'')
-                        {
-                            throw new Exception("token cannot contain ' except as first/last character");
-                        }
+                        if (ch == '\'') throw new Exception("token cannot contain ' except as first/last character");
                         if (Char.IsWhiteSpace(ch))
                         {
                             tokens.Add(currentToken.ToString());
                             currentToken.Clear();
                             state = State.OutsideToken;
                         }
-                        else
-                        {
-                            currentToken.Append(ch);
-                        }
+                        else currentToken.Append(ch);
                     }
                         break;
                     case State.InsideString:
@@ -87,18 +78,12 @@ namespace Atrico.Lib.CommandLineParser.Test
                             currentToken.Clear();
                             state = State.OutsideToken;
                         }
-                        else
-                        {
-                            currentToken.Append(ch);
-                        }
+                        else currentToken.Append(ch);
                     }
                         break;
                 }
             }
-            if (currentToken.Length > 0)
-            {
-                tokens.Add(currentToken.ToString());
-            }
+            if (currentToken.Length > 0) tokens.Add(currentToken.ToString());
 
             return tokens.ToArray();
         }
@@ -113,6 +98,12 @@ namespace Atrico.Lib.CommandLineParser.Test
             _allowWarnings = allowWarnings;
         }
 
+        [TestFixtureSetUp]
+        public void SetUp()
+        {
+            RandomValues.DefaultCharsToInclude = RandomValueGenerator.CharsToInclude.AlphaNumeric;
+        }
+
         [Test]
         public void ValidateOptions()
         {
@@ -124,10 +115,7 @@ namespace Atrico.Lib.CommandLineParser.Test
 
             // Assert 
             Assert.That(Value.Of(ex).Is().Null(), "No Errors");
-            if (!_allowWarnings)
-            {
-                Assert.That(Value.Of(warnings).Is().EqualTo(new String[] {}), "No Warnings");
-            }
+            if (!_allowWarnings) Assert.That(Value.Of(warnings).Is().EqualTo(new String[] {}), "No Warnings");
         }
     }
 }

@@ -1,3 +1,8 @@
-﻿TODO
+﻿IN PROGRESS
+~~~~~~~~~~~
+Enums
+
+TODO
 ~~~~
-Simplify repeat (repeat of repeat)
+multiple positional
+

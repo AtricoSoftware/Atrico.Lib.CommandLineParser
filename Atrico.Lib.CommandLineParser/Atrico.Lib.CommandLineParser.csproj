@@ -61,6 +61,7 @@
     <Compile Include="Exceptions\Parse\UnexpectedOptionException.cs" />
     <Compile Include="OptionInfo.Pod.cs" />
     <Compile Include="OptionInfo.Nullable.cs" />
+    <Compile Include="OptionInfo.Enum.cs" />
     <Compile Include="OptionInfo.String.cs" />
     <Compile Include="OptionInfo.Boolean.cs" />
     <Compile Include="OptionInfo.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="_MergeToLib\Atrico.Lib.Common\Table.cs" />
     <Compile Include="_MergeToLib\Atrico.Lib.Common\RunContextInfo.cs" />
+    <Compile Include="_MergeToLib\Atrico.Lib.Common\TypeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Atrico.Lib.CommandLineParser.nuspec" />
