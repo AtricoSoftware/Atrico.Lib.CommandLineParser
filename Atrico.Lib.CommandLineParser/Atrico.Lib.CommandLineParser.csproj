@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atrico.Lib.Common, Version=1.9.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Atrico.Lib.Common.1.9.1.0\lib\net452\Atrico.Lib.Common.dll</HintPath>
+    <Reference Include="Atrico.Lib.Common, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Atrico.Lib.Common.1.10.0.0\lib\net452\Atrico.Lib.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -73,16 +73,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyVersion.cs" />
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
-    <Compile Include="_MergeToLib\Atrico.Lib.Common\Table.cs" />
-    <Compile Include="_MergeToLib\Atrico.Lib.Common\RunContextInfo.cs" />
-    <Compile Include="_MergeToLib\Atrico.Lib.Common\TypeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Atrico.Lib.CommandLineParser.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="_TODO.txt" />
+    <None Include="_TODO.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

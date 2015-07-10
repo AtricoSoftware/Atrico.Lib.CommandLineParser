@@ -10,7 +10,7 @@ using Atrico.Lib.Testing.TestAttributes.NUnit;
 
 namespace Atrico.Lib.CommandLineParser.Test
 {
-    public abstract class CommandLineParserTestFixture : TestFixtureBase2
+    public abstract class CommandLineParserTestFixture : TestFixtureBase
     {
         protected CommandLineParserTestFixture()
         {

@@ -69,7 +69,7 @@ namespace Atrico.Lib.CommandLineParser
                     table.AppendRow(string.Format("{0}:", detail.Item1), detail.Item2);
                 }
                 if (lines.Any() && table.Rows > 0) lines.Add(string.Empty);
-                lines.AddRange(table.Tabulate());
+                lines.AddRange(table.ToMultilineString());
             }
             return lines;
         }

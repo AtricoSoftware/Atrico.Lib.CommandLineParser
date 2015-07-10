@@ -29,7 +29,11 @@ namespace Atrico.Lib.CommandLineParser
                 }
                 catch (Exception ex)
                 {
-                    throw new ParameterWrongTypeException(Name, Type, valueStr, ex);
+                    // Try for minimum match
+                    var matches = Enum.GetNames(Type).Where(name => name.StartsWith(valueStr, StringComparison.OrdinalIgnoreCase)).ToArray();
+                    if (matches.Length != 1) throw new ParameterWrongTypeException(Name, Type, valueStr, ex);
+                    value = Enum.Parse(Type, matches[0], true);
+                    return true;
                 }
             }
         }

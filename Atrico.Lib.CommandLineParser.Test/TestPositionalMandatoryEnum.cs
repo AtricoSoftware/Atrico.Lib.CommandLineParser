@@ -11,7 +11,7 @@ using Atrico.Lib.Testing.TestAttributes.NUnit;
 namespace Atrico.Lib.CommandLineParser.Test
 {
     [TestFixture]
-    public class TestOptionMandatoryEnum : CommandLineParserTestFixture<TestOptionMandatoryEnum.Options>
+    public class TestPositionalMandatoryEnum : CommandLineParserTestFixture<TestPositionalMandatoryEnum.Options>
     {
         public enum OptionEnum
         {
@@ -23,7 +23,7 @@ namespace Atrico.Lib.CommandLineParser.Test
 
         public class Options
         {
-            [Option(Required = true)]
+            [Option(Position = 0, Required = true)]
             public OptionEnum Opt { get; private set; }
         }
 
@@ -32,36 +32,7 @@ namespace Atrico.Lib.CommandLineParser.Test
         {
             const OptionEnum value = OptionEnum.One;
             // Arrange
-            var args = CreateArgs("-opt {0}", value);
-
-            // Act
-            var options = Parser.Parse<Options>(args);
-
-            // Assert
-            Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
-            Assert.That(Value.Of(options.Opt).Is().EqualTo(value), "Value is correct");
-        }
-
-        [Test]
-        public void TestParameterWrongType()
-        {
-            // Arrange
-            var args = CreateArgs("-opt t");
-
-            // Act
-            var ex = Catch.Exception(() => Parser.Parse<Options>(args));
-
-            // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof (ParameterWrongTypeException)), "Exception thrown");
-            Debug.WriteLine(ex.Message);
-        }
-
-        [Test]
-        public void TestParameterMinimumUnique()
-        {
-            const OptionEnum value = OptionEnum.One;
-            // Arrange
-            var args = CreateArgs("-opt O");
+            var args = CreateArgs("{0}", value);
 
             // Act
             var options = Parser.Parse<Options>(args);
@@ -81,21 +52,21 @@ namespace Atrico.Lib.CommandLineParser.Test
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingOptionException)), "Exception thrown");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof(MissingOptionException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
 
         [Test]
-        public void TestMissingParameter()
+        public void TestParameterWrongType()
         {
             // Arrange
-            var args = CreateArgs("-opt");
+            var args = CreateArgs("text");
 
             // Act
             var ex = Catch.Exception(() => Parser.Parse<Options>(args));
 
             // Assert
-            Assert.That(Value.Of(ex).Is().TypeOf(typeof (MissingParameterException)), "Exception thrown");
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof(ParameterWrongTypeException)), "Exception thrown");
             Debug.WriteLine(ex.Message);
         }
 
@@ -110,7 +81,7 @@ namespace Atrico.Lib.CommandLineParser.Test
             // Assert
             foreach (var line in usage) Debug.WriteLine(line);
             Assert.That(Value.Of(usage).Count().Is().EqualTo(1), "Number of summary lines");
-            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} -Opt <{1}>", ExeName, typeof (OptionEnum).Name)), "Summary");
+            Assert.That(Value.Of(usage[0]).Is().EqualTo(string.Format("{0} [-Opt] <{1}>", ExeName, typeof(OptionEnum).Name)), "Summary");
         }
     }
 }

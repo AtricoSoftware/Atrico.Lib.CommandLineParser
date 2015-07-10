@@ -1,6 +1,5 @@
 ﻿IN PROGRESS
 ~~~~~~~~~~~
-support enums - nullable, minimum necessary text
 positional - multiple
 
 TODO
@@ -9,6 +8,7 @@ TODO
 help switch
 commands
 multiple modes
+enums - list of acceptable values in usage
 
 VALID OPTIONS CHECK
 ~~~~~~~~~~~~~~~~~~~
