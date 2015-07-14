@@ -46,6 +46,34 @@ namespace Atrico.Lib.CommandLineParser.Test
             Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
             Assert.That(Value.Of(options.Opt).Is().EqualTo(value), "Value is correct");
         }
+        [Test]
+        public void TestParameterWrongType()
+        {
+            // Arrange
+            var args = CreateArgs("-opt t");
+
+            // Act
+            var ex = Catch.Exception(() => Parser.Parse<Options>(args));
+
+            // Assert
+            Assert.That(Value.Of(ex).Is().TypeOf(typeof(ParameterWrongTypeException)), "Exception thrown");
+            Debug.WriteLine(ex.Message);
+        }
+
+        [Test]
+        public void TestParameterMinimumUnique()
+        {
+            const OptionEnum value = OptionEnum.One;
+            // Arrange
+            var args = CreateArgs("-opt O");
+
+            // Act
+            var options = Parser.Parse<Options>(args);
+
+            // Assert
+            Assert.That(Value.Of(options).Is().Not().Null(), "Result is not null");
+            Assert.That(Value.Of(options.Opt).Is().EqualTo(value), "Value is correct");
+        }
 
         [Test]
         public void TestMissing()
