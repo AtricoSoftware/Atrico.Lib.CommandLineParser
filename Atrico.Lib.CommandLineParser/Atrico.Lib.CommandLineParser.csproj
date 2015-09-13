@@ -77,7 +77,12 @@
   <ItemGroup>
     <None Include="_TODO.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Atrico.Lib.Common\Atrico.Lib.Common\Atrico.Lib.Common.csproj">
+      <Project>{983a29ac-8a3b-4d78-81d7-bcaf9b520877}</Project>
+      <Name>Atrico.Lib.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

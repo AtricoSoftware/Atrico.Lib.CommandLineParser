@@ -82,6 +82,18 @@
     <Compile Include="TestOptionOptionalString.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Atrico.Lib.Assertions\Atrico.Lib.Assertions\Atrico.Lib.Assertions.csproj">
+      <Project>{84481d71-f7f0-4c10-87ec-b5717c2860de}</Project>
+      <Name>Atrico.Lib.Assertions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Atrico.Lib.Common\Atrico.Lib.Common\Atrico.Lib.Common.csproj">
+      <Project>{983a29ac-8a3b-4d78-81d7-bcaf9b520877}</Project>
+      <Name>Atrico.Lib.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Atrico.Lib.Testing\Atrico.Lib.Testing\Atrico.Lib.Testing.csproj">
+      <Project>{ef628ff6-5ee4-4043-82fe-8caf3ab36787}</Project>
+      <Name>Atrico.Lib.Testing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Atrico.Lib.CommandLineParser\Atrico.Lib.CommandLineParser.csproj">
       <Project>{4ceff42e-f21e-4b30-a31a-cbfbf3fc7458}</Project>
       <Name>Atrico.Lib.CommandLineParser</Name>
