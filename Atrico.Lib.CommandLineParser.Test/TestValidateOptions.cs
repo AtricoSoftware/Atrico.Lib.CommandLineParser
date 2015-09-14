@@ -9,7 +9,7 @@ using Atrico.Lib.CommandLineParser.Exceptions.Options;
 using Atrico.Lib.Testing;
 using Atrico.Lib.Testing.TestAttributes.NUnit;
 
-namespace Atrico.Lib.CommandLineParser.Test
+namespace Atrico.Lib.CommandLineParser.Tests
 {
     public class TestValidateOptions : CommandLineParserTestFixture
     {

@@ -4,7 +4,7 @@ using Atrico.Lib.Assertions.Constraints;
 using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.Testing.TestAttributes.NUnit;
 
-namespace Atrico.Lib.CommandLineParser.Test
+namespace Atrico.Lib.CommandLineParser.Tests
 {
     [TestFixture]
     public class TestCreateArgs : CommandLineParserTestFixture

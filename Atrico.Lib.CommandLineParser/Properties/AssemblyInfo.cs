@@ -5,4 +5,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyProduct("Atrico.Lib.CommandLineParser")]
 [assembly: AssemblyDescription("Command Line Parser")]
 
-[assembly: InternalsVisibleTo("Atrico.Lib.CommandLineParser.Test")]
+[assembly: InternalsVisibleTo("Atrico.Lib.CommandLineParser.Tests")]

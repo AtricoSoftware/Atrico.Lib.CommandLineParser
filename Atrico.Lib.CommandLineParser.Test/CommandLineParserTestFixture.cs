@@ -8,7 +8,7 @@ using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.Testing;
 using Atrico.Lib.Testing.TestAttributes.NUnit;
 
-namespace Atrico.Lib.CommandLineParser.Test
+namespace Atrico.Lib.CommandLineParser.Tests
 {
     public abstract class CommandLineParserTestFixture : TestFixtureBase
     {
@@ -24,7 +24,7 @@ namespace Atrico.Lib.CommandLineParser.Test
 
         protected readonly string ExeName;
         protected readonly string AssemblyName;
-        protected readonly Version AssemblyVersion;
+        protected readonly Common.SemanticVersion.Version AssemblyVersion;
         protected readonly string AssemblyCopyright;
 
         private enum State

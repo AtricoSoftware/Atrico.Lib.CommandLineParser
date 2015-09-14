@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using Atrico.Lib.Assertions;
 using Atrico.Lib.Assertions.Constraints;
@@ -9,7 +8,7 @@ using Atrico.Lib.CommandLineParser.Exceptions.Parse;
 using Atrico.Lib.Testing;
 using Atrico.Lib.Testing.TestAttributes.NUnit;
 
-namespace Atrico.Lib.CommandLineParser.Test
+namespace Atrico.Lib.CommandLineParser.Tests
 {
     public class TestOptionOptionalWithDefaultEnum : CommandLineParserTestFixture<TestOptionOptionalWithDefaultEnum.Options>
     {

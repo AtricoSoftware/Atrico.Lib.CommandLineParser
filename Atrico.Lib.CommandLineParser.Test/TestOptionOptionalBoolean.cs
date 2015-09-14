@@ -6,7 +6,7 @@ using Atrico.Lib.Assertions.Elements;
 using Atrico.Lib.CommandLineParser.Attributes;
 using Atrico.Lib.Testing.TestAttributes.NUnit;
 
-namespace Atrico.Lib.CommandLineParser.Test
+namespace Atrico.Lib.CommandLineParser.Tests
 {
     [TestFixture]
     public class TestOptionOptionalBoolean : CommandLineParserTestFixture<TestOptionOptionalBoolean.Options>
