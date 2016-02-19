@@ -105,6 +105,7 @@
     <None Include="Atrico.Lib.CommandLineParser.nuspec" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="_TODO.txt" />
   </ItemGroup>
   <ItemGroup>
